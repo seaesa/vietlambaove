@@ -5,4 +5,5 @@ _ban-cu/
 server.mjs
 nginx.conf.example
 .htaccess
+_redirects
 README.md
