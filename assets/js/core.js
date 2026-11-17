@@ -85,6 +85,13 @@ const P = {
   trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
   download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
   lock: '<rect x="5" y="10" width="14" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  factory: '<path d="M3 21V10l6 4v-4l6 4V5h4l2 16zM3 21h18M7 17h2M12 17h2M17 17h1"/>',
+  bank: '<path d="M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18M3 18h18"/>',
+  star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  school: '<path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 9v6"/>',
+  moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  money: '<circle cx="12" cy="12" r="9"/><path d="M14.6 9.2c-.5-.8-1.4-1.2-2.6-1.2-1.5 0-2.5.8-2.5 1.9 0 2.6 5.2 1.4 5.2 4.1 0 1.1-1.1 2-2.7 2-1.2 0-2.2-.5-2.7-1.4M12 6.5V8M12 16v1.5"/>',
+  heart: '<path d="M12 20s-7.5-4.6-9.3-9.2C1.5 7.6 3.6 4.5 6.9 4.5c2 0 3.6 1.1 5.1 3 1.5-1.9 3.1-3 5.1-3 3.3 0 5.4 3.1 4.2 6.3C19.5 15.4 12 20 12 20z"/>',
   building: '<path d="M4 21V5l8-2v18M12 8h8v13M2 21h20M7 8h2M7 12h2M7 16h2M15 12h2M15 16h2"/>',
   filter: '<path d="M3 5h18l-7 8v6l-4 2v-8z"/>',
   book: '<path d="M4 4h6a3 3 0 0 1 2 1 3 3 0 0 1 2-1h6v15h-6a2 2 0 0 0-2 2 2 2 0 0 0-2-2H4z"/><path d="M12 5v16"/>',
@@ -106,32 +113,58 @@ export function toggleSave(id) {
   return i === -1;
 }
 
-export function jobRow(j) {
+function jobBits(j) {
   const c = company(j.company);
   const p = province(j.province);
   const off = isExpired(j);
-  const chips = [
-    `<li>${icon("pin", "ico-s")}${esc(j.district)}, ${esc(p.short)}</li>`,
-    `<li>${icon("clock", "ico-s")}${esc(shift(j.shift).name)}</li>`,
-    j.housing ? `<li class="hi">${icon("bed", "ico-s")}Bao ở</li>` : "",
-    j.meals ? `<li class="hi">${icon("meal", "ico-s")}Bao ăn</li>` : "",
-    `<li>${icon("users", "ico-s")}${j.qty} người</li>`
-  ].join("");
-  const flags = off ? "<span class=\"tag tag-off\">Hết hạn</span>"
-    : (j.tier === "vip" ? "<span class=\"tag tag-vip\">VIP</span>" : "") + (j.urgent ? "<span class=\"tag tag-urgent\">Tuyển gấp</span>" : "");
+  const tags = off ? '<span class="tag tag-off">Hết hạn</span>'
+    : (j.tier === "vip" ? '<span class="tag tag-vip">VIP</span>' : "") + (j.urgent ? '<span class="tag tag-urgent">' + icon("bolt") + 'Tuyển gấp</span>' : "");
+  const tick = c.verified ? '<span class="vtick" title="Công ty đã xác thực giấy phép">' + icon("check") + "</span>" : "";
+  const save = '<button class="savebtn" type="button" data-save="' + j.id + '" aria-pressed="' + isSaved(j.id) + '" aria-label="Lưu tin">' + icon("heart") + "</button>";
+  const left = off ? "Đã hết hạn" : j.daysLeft <= 3 ? '<b class="soon">Còn ' + j.daysLeft + " ngày</b>" : "Còn " + j.daysLeft + " ngày";
+  return { c, p, off, tags, tick, save, left };
+}
+
+/* Thẻ dạng lưới (trang chủ) */
+export function jobCard(j) {
+  const { c, p, off, tags, tick, save } = jobBits(j);
+  return `<article class="jcard${j.tier === "vip" && !off ? " is-vip" : ""}">
+    <a class="jc-logo" href="${url.company(c)}" tabindex="-1" aria-hidden="true">${mono(c)}</a>
+    <div class="jc-body">
+      ${tags ? `<p class="jc-tags">${tags}</p>` : ""}
+      <h3><a href="${url.job(j)}" title="${esc(j.title)}">${esc(j.title)}</a></h3>
+      <p class="jc-co">${esc(c.name)}${tick}</p>
+      <p class="jc-pay">${pay(j)} triệu/tháng</p>
+      <p class="jc-loc">${icon("pin", "ico-s")}${esc(j.district)}, ${esc(p.short)}</p>
+    </div>
+    <div class="jc-foot">
+      <span>${ago(j.posted)} · ${num(j.calls || 0)} lượt gọi</span>
+      ${save}
+    </div>
+  </article>`;
+}
+
+/* Dòng tin dạng danh sách (trang việc làm, công ty) */
+export function jobRow(j) {
+  const { c, p, off, tags, tick, save, left } = jobBits(j);
   return `<article class="jrow${j.tier === "vip" && !off ? " is-vip" : ""}${off ? " is-off" : ""}">
-    ${mono(c, "j-logo")}
-    <div class="j-main">
-      <div class="j-flags">${flags}</div>
+    <a class="jr-logo" href="${url.company(c)}" tabindex="-1" aria-hidden="true">${mono(c)}</a>
+    <div class="jr-body">
+      ${tags ? `<p class="jr-tags">${tags}</p>` : ""}
       <h3><a href="${url.job(j)}">${esc(j.title)}</a></h3>
-      <p class="j-co"><span>${esc(c.name)}</span>${c.verified ? `<span class="verified" title="Đã xác thực giấy phép">${icon("shield", "ico-s")}Đã xác thực</span>` : ""}</p>
-      <ul class="j-facts">${chips}</ul>
+      <p class="jr-co">${esc(c.name)}${tick}</p>
+      <ul class="jr-facts">
+        <li class="jr-pay">${icon("money", "ico-s")}${pay(j)} triệu</li>
+        <li>${icon("pin", "ico-s")}${esc(j.district)}, ${esc(p.short)}</li>
+        <li>${icon("clock", "ico-s")}${left}</li>
+      </ul>
+      <p class="jr-chips">
+        <span class="chip">${esc(target(j.target).name)}</span>
+        <span class="chip">${esc(shift(j.shift).name)}</span>
+        ${j.housing ? '<span class="chip chip-ok">Bao ở</span>' : ""}${j.meals ? '<span class="chip chip-ok">Bao ăn</span>' : ""}
+      </p>
     </div>
-    <div class="j-side">
-      <div class="j-pay">${pay(j)} <small>triệu/tháng</small></div>
-      <time>${ago(j.posted)}</time>
-      <button class="savebtn" type="button" data-save="${j.id}" aria-pressed="${isSaved(j.id)}" aria-label="Lưu tin">${icon("bookmark")}</button>
-    </div>
+    ${save}
   </article>`;
 }
 

@@ -1,149 +1,165 @@
-import { V, $, $$, esc, icon, url, pay, jobRow, adRow, activeJobs, province, SITE } from '../core.js';
+import { V, $, $$, esc, icon, url, mono, jobCard, activeJobs, SITE } from '../core.js';
 import { go } from '../router.js';
 
+const PER = 6;
+
 export default function () {
-  const jobs = activeJobs().sort((a, b) => a.posted - b.posted || (b.tier === 'vip') - (a.tier === 'vip'));
-  const urgent = jobs.filter((j) => j.urgent).slice(0, 5);
-  const verified = V.companies.filter((c) => c.verified).length;
-  const count = (p, d) => jobs.filter((j) => j.province === p && (!d || j.district === d)).length;
-  const [lead, ...rest] = V.posts;
+  const jobs = activeJobs().sort((a, b) => (b.tier === 'vip') - (a.tier === 'vip') || a.posted - b.posted);
+  const count = (fn) => jobs.filter(fn).length;
+  const posts = V.posts.slice(0, 4);
+
+  const quick = [
+    ['Bảo vệ tòa nhà', '/viec-lam?muc-tieu=toa-nha'],
+    ['Bảo vệ KCN Bình Dương', '/viec-lam/binh-duong?muc-tieu=kcn'],
+    ['Vệ sĩ', '/viec-lam?muc-tieu=ve-si'],
+    ['Bảo vệ ca đêm', '/viec-lam?ca=dem'],
+    ['Có chỗ ở', '/viec-lam?che-do=o'],
+    ['Tuyển gấp', '/viec-lam?gap=1']
+  ];
+
+
+  const tops = V.companies.map((c) => ({ c, n: count((j) => j.company === c.id) })).sort((a, b) => b.c.verified - a.c.verified || b.n - a.n);
+  const sponsor = V.companies.find((c) => c.id === 'phuong-nam');
+
+  const urgent = jobs.filter((j) => j.urgent).slice(0, 6);
+  const tiles = [...V.targets.map((t) => [t.name, '/viec-lam?muc-tieu=' + t.id, t.icon, count((j) => j.target === t.id)]),
+    ['Bảo vệ ca đêm', '/viec-lam?ca=dem', 'moon', count((j) => j.shift === 'dem')],
+    ['Có chỗ ở miễn phí', '/viec-lam?che-do=o', 'bed', count((j) => j.housing)]];
 
   const html = `
-  <section class="lead"><div class="wrap">
-    <div class="lead-copy">
-      <p class="lead-badge">${icon("shield", "ico-s")}100% công ty đã nộp giấy phép kinh doanh dịch vụ bảo vệ</p>
-      <h1>Việc làm bảo vệ uy tín, <em>lương rõ ràng</em> gần nơi bạn ở</h1>
-      <p class="lead-sub">${jobs.length} việc làm bảo vệ tòa nhà, nhà máy, ngân hàng, sự kiện đang tuyển. Ứng viên không mất bất kỳ khoản phí nào.</p>
-      <form class="finder" id="finder" role="search">
-        <div class="finder-row">
-          <label><span>Khu vực</span><select name="tinh"><option value="">Toàn quốc</option>${V.provinces.map((p) => `<option value="${p.slug}">${p.name}</option>`).join("")}</select></label>
-          <label><span>Ca làm</span><select name="ca"><option value="">Mọi ca</option>${V.shifts.map((s) => `<option value="${s.id}">${s.name}</option>`).join("")}</select></label>
-          <label><span>Mục tiêu</span><select name="muc-tieu"><option value="">Mọi nơi</option>${V.targets.map((t) => `<option value="${t.id}">${t.name}</option>`).join("")}</select></label>
-          <button class="btn btn-gold" type="submit">${icon("search")}Tìm việc</button>
+  <section class="hero"><div class="wrap">
+    <h1>Việc bảo vệ uy tín, đi làm ngay!</h1>
+    <p class="hero-sub">${jobs.length} tin đang tuyển từ ${V.companies.filter((c) => c.verified).length} công ty đã xác thực giấy phép · Ứng tuyển miễn phí</p>
+    <form class="hsearch" id="finder" role="search">
+      <label class="hs-q">${icon('search')}<span class="sr">Từ khóa</span><input name="q" type="search" placeholder="Tìm việc bảo vệ, tên công ty, khu công nghiệp…" autocomplete="off"></label>
+      <label class="hs-sel">${icon('pin')}<span class="sr">Tỉnh thành</span><select name="tinh"><option value="">Chọn khu vực</option>${V.provinces.map((p) => `<option value="${p.slug}">${p.name}</option>`).join('')}</select></label>
+      <label class="hs-sel">${icon('clock')}<span class="sr">Ca làm</span><select name="ca"><option value="">Ca làm</option>${V.shifts.map((x) => `<option value="${x.id}">${x.name}</option>`).join('')}</select></label>
+      <button class="btn btn-gold" type="submit">Tìm việc</button>
+    </form>
+    <p class="hquick"><span>Tìm nhiều:</span>${quick.map(([t, h]) => `<a href="${h}">${t}</a>`).join('')}</p>
+  </div></section>
+
+  <div class="wrap home">
+    <section class="panel-box" aria-labelledby="catH">
+      <div class="pb-head"><h2 id="catH">Tìm việc theo loại mục tiêu</h2></div>
+      <div class="tiles">${tiles.map(([t, h, ic, n]) => `<a class="tile" href="${h}"><span class="tile-ic">${icon(ic)}</span><b>${esc(t)}</b><small>${n} việc làm</small></a>`).join('')}</div>
+    </section>
+
+    <section class="panel-box" aria-labelledby="urgH">
+      <div class="pb-strip">
+        <div>
+          <h2 id="urgH">${icon('bolt')}Việc bảo vệ tuyển gấp</h2>
+          <ul><li>${icon('check', 'ico-s')}Công ty đã xác thực</li><li>${icon('check', 'ico-s')}Phỏng vấn, nhận việc trong 1–2 ngày</li></ul>
         </div>
-        <div class="finder-opt">
-          <label class="check"><input type="checkbox" name="o" value="1">Có chỗ ở</label>
-          <label class="check"><input type="checkbox" name="gap" value="1">Cần người ngay</label>
-          <button class="linkbtn" type="button" id="nearMe">${icon("locate", "ico-s")}Việc gần tôi</button>
-        </div>
-      </form>
-      <ul class="lead-facts">
-        <li><b>${jobs.length}</b><span>việc đang tuyển</span></li>
-        <li><b>${verified}</b><span>công ty đã xác thực</span></li>
-        <li><b>0đ</b><span>phí cho ứng viên</span></li>
-      </ul>
-    </div>
-    <aside class="board" aria-labelledby="boardH">
-      <div class="board-head"><h2 id="boardH">${icon("bolt", "ico-s")}Cần người ngay</h2><span>Cập nhật ${new Date().toLocaleDateString("vi-VN")}</span></div>
-      <ol>${urgent.map((j) => `<li><a href="${url.job(j)}">
-        <span class="b-title">${esc(j.title)}</span>
-        <span class="b-place">${icon("pin", "ico-s")}${esc(j.district)}, ${esc(province(j.province).short)}</span>
-        <span class="b-pay">${pay(j)} tr</span></a></li>`).join("")}</ol>
-      <div class="board-foot"><a class="more" href="/viec-lam?gap=1">Xem ${jobs.filter((j) => j.urgent).length} tin tuyển gấp ${icon("arrow", "ico-s")}</a></div>
-    </aside>
-  </div></section>
-
-  <section class="sec"><div class="wrap">
-    <div class="sec-head"><div><h2>Việc theo khu vực</h2><p>Chọn tỉnh hoặc quận để xem việc gần nơi bạn ở.</p></div><a class="more" href="/viec-lam">Tất cả khu vực ${icon('arrow', 'ico-s')}</a></div>
-    <div class="areas">${V.provinces.map((p) => `<div class="area">
-      <div class="area-top"><a href="${url.area(p.slug)}">${p.name}</a><span>${count(p.slug)} tin</span></div>
-      <ul>${p.districts.slice(0, 6).map((d) => `<li><a href="${url.area(p.slug, d)}">${esc(d)}</a></li>`).join('')}</ul>
-    </div>`).join('')}</div>
-  </div></section>
-
-  <section class="sec"><div class="wrap">
-    <div class="sec-head"><div><h2>Tin mới đăng</h2></div><a class="more" href="/viec-lam">Xem ${jobs.length} tin ${icon('arrow', 'ico-s')}</a></div>
-    <div class="ttabs" role="tablist" aria-label="Lọc theo mục tiêu">
-      <button class="on" role="tab" aria-selected="true" data-t="">Tất cả</button>
-      ${V.targets.map((t) => `<button role="tab" aria-selected="false" data-t="${t.id}">${t.name.split(' / ')[0]}</button>`).join('')}
-    </div>
-    <div class="jlist" id="newList"></div>
-  </div></section>
-
-  <section class="sec"><div class="wrap vet">
-    <div>
-      <div class="sec-head"><div><h2>Một tin tuyển dụng được kiểm tra thế nào</h2></div></div>
-      <ol class="steps">
-        <li><b>Đối chiếu giấy phép</b><p>Mã số thuế và giấy chứng nhận đủ điều kiện an ninh trật tự được đối chiếu trước khi công ty đăng tin đầu tiên.</p></li>
-        <li><b>Quét nội dung bất thường</b><p>Hệ thống đánh dấu các cụm như "phí đồng phục", "đặt cọc", "giữ bằng gốc" và mức lương cao bất thường so với khu vực.</p></li>
-        <li><b>Người duyệt xem lại</b><p>Tin bị đánh dấu được giữ ở hàng chờ cho tới khi một kiểm duyệt viên xem và quyết định.</p></li>
-        <li><b>Ứng viên báo cáo</b><p>Mỗi tin có nút báo cáo. Ba báo cáo hợp lệ thì tin tự ẩn chờ xử lý.</p></li>
-      </ol>
-    </div>
-    <div class="sheet" aria-label="Ví dụ phiếu kiểm duyệt">
-      <div class="sheet-head"><b>Phiếu kiểm duyệt #24-1187</b><span>Tin chờ duyệt</span></div>
-      <p class="sheet-q">"Tuyển gấp 20 bảo vệ KCN, lương 18 triệu, nộp 1.500.000đ tiền đồng phục khi nhận việc…"</p>
-      <ul>
-        <li><span class="ok">${icon('check')}</span><div>Giấy phép ANTT hợp lệ<small>Đối chiếu ngày 03/11/2026</small></div></li>
-        <li><span class="no">${icon('x')}</span><div>Thu tiền của người lao động<small>Cụm "nộp 1.500.000đ tiền đồng phục"</small></div></li>
-        <li><span class="wait">${icon('alert')}</span><div>Lương cao hơn 85% tin cùng khu vực<small>Trung bình bảo vệ KCN Bình Dương: 8,5–10 triệu</small></div></li>
-        <li><span class="ok">${icon('check')}</span><div>Địa chỉ làm việc cụ thể<small>KCN VSIP 1, Thuận An</small></div></li>
-      </ul>
-      <div class="sheet-foot">Kết quả: giữ lại, yêu cầu công ty sửa nội dung</div>
-    </div>
-  </div></section>
-
-  <section class="band"><div class="wrap">
-    <div>
-      <p class="kicker">Dành cho công ty bảo vệ</p>
-      <h2>Đăng tin bằng một tin nhắn, nhận cuộc gọi trong ngày.</h2>
-      <p>Gõ như khi nhắn Zalo cho đội trưởng. Trợ lý tách ra lương, ca, địa điểm, chỗ ở; thiếu gì sẽ hỏi lại, không tự bịa thông tin.</p>
-      <ul>
-        <li>${icon('check')}<span>3 tin miễn phí mỗi tháng cho công ty đã xác thực</span></li>
-        <li>${icon('check')}<span>Theo dõi ứng viên từ lúc gọi tới lúc nhận đồng phục</span></li>
-        <li>${icon('check')}<span>Nhắc gia hạn 3 ngày trước khi tin hết hạn</span></li>
-      </ul>
-      <div class="band-act"><a class="btn btn-gold btn-l" href="/nha-tuyen-dung/dang-tin">Đăng tin miễn phí</a><a class="btn btn-line btn-l" href="/bang-gia">Xem bảng giá</a></div>
-    </div>
-    <div class="chat" aria-label="Ví dụ trợ lý đăng tin">
-      <div class="chat-head"><b>Trợ lý đăng tin</b><span>Ví dụ</span></div>
-      <div class="chat-body">
-        <div class="msg msg-me">cần 5 bv chung cư q7, ca 12 tiếng, 8tr5, bao ở, nam dưới 45</div>
-        <div class="msg msg-bot"><b>Đã hiểu</b>
-          <dl><dt>Vị trí</dt><dd>Bảo vệ chung cư</dd><dt>Khu vực</dt><dd>Quận 7, TP.HCM</dd><dt>Ca</dt><dd>12 tiếng</dd><dt>Lương</dt><dd>8,5 triệu/tháng</dd><dt>Số lượng</dt><dd>5 người</dd><dt>Chế độ</dt><dd>Bao ở</dd></dl>
-        </div>
-        <div class="msg msg-bot"><b>Cần thêm</b>Ca 12 tiếng là ca ngày, ca đêm hay xoay ca? Địa chỉ chung cư cụ thể ở đâu?</div>
-        <div class="msg msg-me">xoay ca, chung cư sunrise city nguyễn hữu thọ</div>
+        <span class="pb-badge">Phản hồi trong <b>24h</b></span>
       </div>
-    </div>
-  </div></section>
+      <div class="jgrid">${urgent.map(jobCard).join('')}</div>
+      <p class="pb-more"><a class="btn btn-soft" href="/viec-lam?gap=1">Xem thêm việc tuyển gấp</a></p>
+    </section>
 
-  <section class="sec"><div class="wrap">
-    <div class="sec-head"><div><h2>Cẩm nang nghề bảo vệ</h2></div><a class="more" href="/cam-nang">Tất cả bài viết ${icon('arrow', 'ico-s')}</a></div>
-    <div class="guides">
-      <article class="guide-lead">
-        <span class="cat">${esc(lead.cat)}</span>
-        <h3><a href="${url.post(lead)}">${esc(lead.title)}</a></h3>
-        <p>${esc(lead.excerpt)}</p>
-        <span class="meta">${lead.date} · ${lead.read} phút đọc</span>
-      </article>
-      <ul class="glist">${rest.map((p) => `<li><div><span class="cat">${esc(p.cat)}</span><br><a href="${url.post(p)}">${esc(p.title)}</a></div><time>${p.date}</time></li>`).join('')}</ul>
+    <a class="hbanner" href="/viec-lam/binh-duong?muc-tieu=kcn">
+      <span class="hb-ad">Tài trợ</span>
+      <div class="hb-text">
+        <span class="hb-co">${mono(sponsor)}${esc(sponsor.name)}</span>
+        <strong>Tuyển 25 bảo vệ nhà máy KCN VSIP 1 – Bình Dương</strong>
+        <ul><li>Lương 8,5 – 10 triệu/tháng</li><li>Bao ăn 3 bữa, ký túc xá miễn phí</li><li>Đóng BHXH đầy đủ từ tháng đầu</li></ul>
+      </div>
+      <div class="hb-cta"><b>8,5–10</b><span>triệu/tháng</span><span class="btn btn-gold">Ứng tuyển ngay</span></div>
+    </a>
+
+    <section class="panel-box" aria-labelledby="hotH">
+      <div class="pb-head">
+        <h2 id="hotH">Việc làm bảo vệ mới nhất</h2>
+        <a class="more" href="/viec-lam">Xem tất cả ${icon('arrow', 'ico-s')}</a>
+      </div>
+      <div class="pills-row" role="tablist" aria-label="Lọc theo tỉnh thành">
+        <button class="on" role="tab" aria-selected="true" data-p="">Tất cả</button>
+        ${V.provinces.map((p) => `<button role="tab" aria-selected="false" data-p="${p.slug}">${p.short}</button>`).join('')}
+      </div>
+      <div class="jgrid" id="hotList"></div>
+      <div class="pg" id="hotPg"></div>
+    </section>
+
+    <section class="panel-box" aria-labelledby="coH">
+      <div class="pb-head"><h2 id="coH">Nhà tuyển dụng tiêu biểu</h2></div>
+      <div class="cogrid">${tops.map(({ c, n }) => `<a class="cobox" href="${url.company(c)}">
+        ${mono(c, 'mono-l')}
+        <b>${esc(c.name)}</b>
+        <span>${c.verified ? `<i class="vtick">${icon('check')}</i>` : ''}${n} việc đang tuyển</span>
+      </a>`).join('')}</div>
+    </section>
+
+    <section class="trust" aria-label="Cam kết">
+      <div>${icon('shield')}<b>Tin được kiểm duyệt</b><p>Mỗi tin được duyệt trước khi hiển thị. Tin thu phí đồng phục, đặt cọc bị gỡ ngay.</p></div>
+      <div>${icon('check')}<b>Công ty có giấy phép</b><p>Đối chiếu mã số thuế và giấy phép kinh doanh dịch vụ bảo vệ của Bộ Công an.</p></div>
+      <div>${icon('phone')}<b>Gọi thẳng, không qua trung gian</b><p>Bấm gọi hoặc nhắn Zalo cho người tuyển. Ứng viên không mất bất kỳ khoản phí nào.</p></div>
+      <div>${icon('flag')}<b>Báo cáo trong 1 chạm</b><p>Thấy dấu hiệu lừa đảo? Bấm báo cáo, đội kiểm duyệt xử lý trong 24 giờ.</p></div>
+    </section>
+
+    <div class="home-two">
+      <section class="panel-box" aria-labelledby="areaH">
+        <div class="pb-head"><h2 id="areaH">Việc làm theo khu vực</h2></div>
+        <div class="arealinks">${V.provinces.map((p) => `<div>
+          <h3><a href="${url.area(p.slug)}">Bảo vệ ${p.name}</a> <em>${count((j) => j.province === p.slug)}</em></h3>
+          <ul>${p.districts.slice(0, 4).map((d) => `<li><a href="${url.area(p.slug, d)}">${esc(d)}</a></li>`).join('')}</ul>
+        </div>`).join('')}</div>
+      </section>
+      <section class="empband">
+        <span class="kicker">Dành cho công ty bảo vệ</span>
+        <h2>Tuyển đủ quân số trong 24 giờ</h2>
+        <p>Đăng tin miễn phí, AI soạn tin giúp bạn, nhận cuộc gọi từ ứng viên đã xuất ngũ, có chứng chỉ nghiệp vụ.</p>
+        <div class="eb-act">
+          <a class="btn btn-gold" href="/nha-tuyen-dung/dang-tin">Đăng tin miễn phí</a>
+          <a class="btn btn-ghost" href="/bang-gia">Xem bảng giá</a>
+        </div>
+      </section>
     </div>
-  </div></section>`;
+
+    <section class="panel-box" aria-labelledby="blogH">
+      <div class="pb-head"><h2 id="blogH">Cẩm nang nghề bảo vệ</h2><a class="more" href="/cam-nang">Xem tất cả ${icon('arrow', 'ico-s')}</a></div>
+      <div class="bgrid">${posts.map((p, i) => `<article class="bcard">
+        <a class="bc-thumb t-${i % 4}" href="${url.post(p)}" tabindex="-1" aria-hidden="true"><span>${esc(p.cat)}</span></a>
+        <h3><a href="${url.post(p)}">${esc(p.title)}</a></h3>
+        <p class="meta">${p.date} · ${p.read} phút đọc</p>
+      </article>`).join('')}</div>
+    </section>
+  </div>`;
 
   function mount(root) {
-    const list = $('#newList', root);
-    const draw = (t) => {
-      const rows = jobs.filter((j) => !t || j.target === t).slice(0, 8);
+    const list = $('#hotList', root);
+    const pg = $('#hotPg', root);
+    let prov = '';
+    let page = 1;
+    const draw = () => {
+      const rows = jobs.filter((j) => !prov || j.province === prov);
+      const pages = Math.max(1, Math.ceil(rows.length / PER));
+      page = Math.min(page, pages);
       list.innerHTML = rows.length
-        ? rows.map((j, i) => jobRow(j) + (i === 3 ? adRow(0) : '')).join('')
-        : `<div class="empty"><h3>Chưa có tin ở mục này</h3><p class="mute">Thử chọn mục tiêu khác hoặc <a href="/viec-lam">xem tất cả việc</a>.</p></div>`;
+        ? rows.slice((page - 1) * PER, page * PER).map(jobCard).join('')
+        : `<div class="empty"><h3>Chưa có tin ở khu vực này</h3><p class="mute"><a href="/viec-lam">Xem việc ở khu vực khác</a></p></div>`;
+      pg.innerHTML = `<button type="button" data-d="-1" aria-label="Trang trước" ${page === 1 ? 'disabled' : ''}>${icon('arrow', 'ico-s flip')}</button>
+        <span><b>${page}</b> / ${pages} trang</span>
+        <button type="button" data-d="1" aria-label="Trang sau" ${page === pages ? 'disabled' : ''}>${icon('arrow', 'ico-s')}</button>`;
     };
-    draw('');
-    $$('.ttabs button', root).forEach((b) => b.addEventListener('click', () => {
-      $$('.ttabs button', root).forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
-      draw(b.dataset.t);
+    draw();
+    pg.addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-d]');
+      if (b) { page += Number(b.dataset.d); draw(); }
+    });
+    $$('.pills-row button', root).forEach((b) => b.addEventListener('click', () => {
+      $$('.pills-row button', root).forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
+      prov = b.dataset.p; page = 1; draw();
     }));
 
     $('#finder', root).addEventListener('submit', (e) => {
       e.preventDefault();
       const f = new FormData(e.target);
-      const q = new URLSearchParams();
-      for (const k of ['ca', 'muc-tieu', 'gap']) if (f.get(k)) q.set(k, f.get(k));
-      if (f.get('o')) q.set('che-do', 'o');
-      go(url.area(f.get('tinh')) + (q.toString() ? '?' + q : ''));
+      const q = (f.get('q') || '').trim();
+      const qs = new URLSearchParams();
+      if (q) qs.set('q', q);
+      if (f.get('ca')) qs.set('ca', f.get('ca'));
+      go(url.area(f.get('tinh')) + (qs.toString() ? '?' + qs : ''));
     });
-    $('#nearMe', root).addEventListener('click', () => go('/viec-lam?gan-toi=1'));
   }
 
   return {

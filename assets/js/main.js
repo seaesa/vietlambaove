@@ -32,11 +32,10 @@ function header(navKey) {
   const u = user();
   const a = acctLink(u);
   const postHref = u?.role === 'employer' ? '/nha-tuyen-dung/dang-tin' : '/dang-nhap?vai-tro=nha-tuyen-dung';
+  const right = u
+    ? `<a class="acct" href="${a.href}">${icon('user')}${a.label}</a>`
+    : `<a class="btn btn-line btn-s" href="/dang-nhap?dang-ky=1">Đăng ký</a><a class="btn btn-primary btn-s" href="/dang-nhap">Đăng nhập</a>`;
   $('#header').innerHTML = `
-  <div class="util"><div class="wrap">
-    <span>Mọi công ty trên trang đã nộp <b>giấy phép kinh doanh dịch vụ bảo vệ</b>. Ứng viên không trả bất kỳ khoản phí nào.</span>
-    <span class="u-r"><a href="/chinh-sach/lien-he">Hỗ trợ: 1900 6868</a></span>
-  </div></div>
   <header class="mast"><div class="wrap">
     <a class="brand" href="/" aria-label="Việc Làm Bảo Vệ – Trang chủ">
       <img src="/assets/img/logo-shield.webp" alt="" width="40" height="41">
@@ -44,8 +43,8 @@ function header(navKey) {
     </a>
     <nav class="nav" aria-label="Chính">${NAV.map(([k, h, t]) => `<a href="${h}" class="${k === navKey ? 'on' : ''}">${t}</a>`).join('')}</nav>
     <div class="mast-act">
-      <a class="acct" href="${a.href}">${icon('user')}${a.label}</a>
-      <a class="btn btn-primary" href="${postHref}">Đăng tin tuyển dụng</a>
+      ${right}
+      <a class="emp-link" href="${postHref}"><small>Dành cho nhà tuyển dụng</small>Đăng tuyển, tìm ứng viên</a>
       <button class="burger" type="button" data-drawer aria-label="Mở menu" aria-expanded="false">${icon('menu')}</button>
     </div>
   </div></header>
@@ -58,6 +57,10 @@ function header(navKey) {
       ${u ? '<a href="#" data-logout>Đăng xuất</a>' : ''}
       <a class="btn btn-primary btn-l" href="${postHref}">Đăng tin tuyển dụng</a>
     </div>
+  </div>
+  <div class="floaty" aria-label="Hỗ trợ nhanh">
+    <a href="/chinh-sach/lien-he" class="fz" aria-label="Chat Zalo với tư vấn viên">Zalo</a>
+    <a href="tel:19006868" aria-label="Gọi hotline 1900 6868">${icon('phone')}</a>
   </div>`;
 }
 
@@ -76,28 +79,42 @@ function footer(path) {
   const V = window.VLBV;
   $('#footer').innerHTML = `<footer class="foot"><div class="wrap">
     <div class="foot-top">
-      <div>
+      <div class="foot-co">
         <a class="brand" href="/"><img src="/assets/img/logo-shield.webp" alt="" width="40" height="41"><span class="brand-word"><small>VIỆC LÀM</small><span>BẢO VỆ</span></span></a>
-        <p class="foot-note">Chuyên trang tuyển dụng cho ngành bảo vệ. Tin được kiểm duyệt trước khi hiển thị, công ty được xác thực giấy phép.</p>
+        <p class="foot-note">Chuyên trang tuyển dụng ngành bảo vệ, vệ sĩ. Tin được kiểm duyệt trước khi hiển thị, công ty được xác thực giấy phép.</p>
+        <ul class="foot-contact">
+          <li>${icon('phone', 'ico-s')}Hotline: <a href="tel:19006868">1900 6868</a> (8:00 – 21:00)</li>
+          <li>${icon('chat', 'ico-s')}Email: <a href="mailto:hotro@vieclambaove.vn">hotro@vieclambaove.vn</a></li>
+          <li>${icon('pin', 'ico-s')}Tầng 5, 123 Nguyễn Văn Linh, Quận 7, TP.HCM</li>
+        </ul>
       </div>
-      <div><h4>Theo khu vực</h4><ul>${V.provinces.map((p) => `<li><a href="/viec-lam/${p.slug}">Bảo vệ ${p.short}</a></li>`).join('')}</ul></div>
-      <div><h4>Theo mục tiêu</h4><ul>${V.targets.map((t) => `<li><a href="/viec-lam?muc-tieu=${t.id}">${t.name}</a></li>`).join('')}</ul></div>
-      <div><h4>Nhà tuyển dụng</h4><ul>
-        <li><a href="/nha-tuyen-dung/dang-tin">Đăng tin tuyển dụng</a></li>
-        <li><a href="/bang-gia">Bảng giá dịch vụ</a></li>
-        <li><a href="/nha-tuyen-dung/tim-ung-vien">Tìm ứng viên</a></li>
-        <li><a href="/nha-tuyen-dung/xac-thuc">Xác thực công ty</a></li>
-        <li><a href="/chinh-sach/quy-che">Quy định đăng tin</a></li>
-      </ul></div>
-      <div><h4>Thông tin</h4><ul>
-        <li><a href="/cam-nang">Cẩm nang nghề bảo vệ</a></li>
+      <div><h4>Về Việc Làm Bảo Vệ</h4><ul>
+        <li><a href="/chinh-sach/lien-he">Liên hệ</a></li>
         <li><a href="/chinh-sach/dieu-khoan">Điều khoản sử dụng</a></li>
         <li><a href="/chinh-sach/bao-mat">Chính sách bảo mật</a></li>
-        <li><a href="/chinh-sach/lien-he">Liên hệ</a></li>
+        <li><a href="/chinh-sach/quy-che">Quy chế hoạt động</a></li>
         <li><a href="/quan-tri">Trang quản trị</a></li>
       </ul></div>
+      <div><h4>Dành cho ứng viên</h4><ul>
+        <li><a href="/viec-lam">Việc làm bảo vệ mới nhất</a></li>
+        <li><a href="/viec-lam?gap=1">Việc làm tuyển gấp</a></li>
+        <li><a href="/ung-vien">Hồ sơ của tôi</a></li>
+        <li><a href="/cam-nang">Cẩm nang nghề bảo vệ</a></li>
+        <li><a href="/cam-nang/dau-hieu-cong-ty-bao-ve-lua-dao">Cảnh báo lừa đảo</a></li>
+      </ul></div>
+      <div><h4>Dành cho nhà tuyển dụng</h4><ul>
+        <li><a href="/nha-tuyen-dung/dang-tin">Đăng tin tuyển dụng</a></li>
+        <li><a href="/nha-tuyen-dung/tim-ung-vien">Tìm hồ sơ ứng viên</a></li>
+        <li><a href="/bang-gia">Bảng giá dịch vụ</a></li>
+        <li><a href="/bang-gia#quang-cao">Quảng cáo banner</a></li>
+        <li><a href="/nha-tuyen-dung/xac-thuc">Xác thực công ty</a></li>
+      </ul></div>
+      <div><h4>Việc làm theo tỉnh</h4><ul>${V.provinces.map((p) => `<li><a href="/viec-lam/${p.slug}">Bảo vệ ${p.short}</a></li>`).join('')}</ul></div>
     </div>
-    <div class="foot-base"><span>© 2026 ViecLamBaoVe.vn – Bản giao diện mẫu, dữ liệu minh họa.</span><span>Hotline 1900 6868 · hotro@vieclambaove.vn</span></div>
+    <div class="foot-base">
+      <p><b>Công ty Cổ phần Việc Làm Bảo Vệ</b> (dữ liệu mẫu) · Giấy chứng nhận ĐKKD số 03xxxxxxxx do Sở KH&amp;ĐT TP.HCM cấp · Người chịu trách nhiệm nội dung: Ban biên tập.</p>
+      <p>© 2026 ViecLamBaoVe.vn. Bản giao diện mẫu, số liệu minh họa.</p>
+    </div>
   </div></footer>${tabbar(path)}`;
 }
 

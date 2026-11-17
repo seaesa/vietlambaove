@@ -61,8 +61,6 @@ export default function ({ params: [ps, ds], query }) {
   const h1 = s.gap ? `Việc bảo vệ tuyển gấp${what} tại ${place}` : `Việc làm bảo vệ${what} tại ${place}`;
   const base = d ? res : filterJobs(all, { ...s, quan: '' });
 
-  const cnt = (fn) => base.filter(fn).length;
-  const chk = (name, val, label, on, n) => `<label class="check"><input type="checkbox" name="${name}" value="${val}" ${on ? 'checked' : ''}>${label}${n !== undefined ? `<em>${n}</em>` : ''}</label>`;
 
   const chips = [];
   if (s.q) chips.push(['q', `"${s.q}"`]);
@@ -73,82 +71,90 @@ export default function ({ params: [ps, ds], query }) {
   if (s.cd.includes('an')) chips.push(['cd:an', 'Bao ăn']);
   if (s.gap) chips.push(['gap', 'Tuyển gấp']);
 
-  const sal = res.length ? [Math.min(...res.map((j) => j.salaryMin)), Math.max(...res.map((j) => j.salaryMax))] : null;
   const crumb = [['Trang chủ', '/'], ['Việc làm', p ? '/viec-lam' : null]];
   if (p) crumb.push([p.name, d ? url.area(p.slug) : null]);
   if (d) crumb.push([d, null]);
 
+  const today = new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const sel = (name, opts, cur, label) => `<label class="lf-sel${cur ? ' on' : ''}"><span class="sr">${label}</span><select name="${name}">${opts.map(([v, t]) => `<option value="${v}" ${v === cur ? 'selected' : ''}>${t}</option>`).join('')}</select></label>`;
+  const side = p
+    ? p.districts.map((x) => [x, buildHref({ ...s, quan: x === d ? '' : x }), base.filter((j) => j.district === x).length, x === d])
+    : V.provinces.map((x) => [x.name, url.area(x.slug), all.filter((j) => j.province === x.slug).length, false]);
+
   const html = `
-  <div class="phead"><div class="wrap">
-    ${crumbs(crumb)}
-    <h1>${esc(h1)}</h1>
-    <p>${res.length ? `${res.length} tin đang tuyển${sal ? `, lương từ ${String(sal[0]).replace('.', ',')} đến ${String(sal[1]).replace('.', ',')} triệu/tháng` : ''}.` : 'Chưa có tin phù hợp với bộ lọc.'}${near ? ' Đang hiển thị theo vị trí gần đúng của bạn (TP.HCM).' : ''}</p>
-  </div></div>
-
-  <div class="wrap listing">
-    <form class="filters" id="filters" aria-label="Bộ lọc">
-      <div class="filters-head"><b>Bộ lọc</b><button class="btn btn-quiet btn-s" type="button" data-fclose>${icon('x')}Đóng</button></div>
-      <div class="fgroup"><b>Từ khóa</b><input class="input" name="q" value="${esc(s.q)}" placeholder="Tên công ty, khu vực…"></div>
-      <div class="fgroup"><b>Khu vực</b>
-        <select class="select" name="tinh"><option value="">Toàn quốc</option>${V.provinces.map((x) => `<option value="${x.slug}" ${x.slug === s.tinh ? 'selected' : ''}>${x.name}</option>`).join('')}</select>
-        ${p ? `<ul class="dlist">${p.districts.map((x) => { const n = base.filter((j) => j.district === x).length; return `<li><a href="${buildHref({ ...s, quan: x === d ? '' : x })}" class="${x === d ? 'on' : ''}">${esc(x)}<em>${n}</em></a></li>`; }).join('')}</ul>` : ''}
-      </div>
-      <div class="fgroup"><b>Mức lương</b>${PAY.map(([v, t]) => `<label class="check"><input type="radio" name="luong" value="${v}" ${v === s.luong ? 'checked' : ''}>${t}</label>`).join('')}</div>
-      <div class="fgroup"><b>Ca làm</b>${V.shifts.map((x) => chk('ca', x.id, x.name, s.ca.includes(x.id), cnt((j) => j.shift === x.id))).join('')}</div>
-      <div class="fgroup"><b>Loại mục tiêu</b>${V.targets.map((x) => chk('mt', x.id, x.name, s.mt.includes(x.id), cnt((j) => j.target === x.id))).join('')}</div>
-      <div class="fgroup"><b>Chế độ</b>${chk('cd', 'o', 'Bao ở', s.cd.includes('o'), cnt((j) => j.housing))}${chk('cd', 'an', 'Bao ăn', s.cd.includes('an'), cnt((j) => j.meals))}${chk('gap', '1', 'Chỉ tin tuyển gấp', s.gap, cnt((j) => j.urgent))}</div>
-      <div class="filters-apply"><button class="btn btn-primary btn-block btn-l" type="submit" id="fapply">Xem ${res.length} việc</button></div>
+  <div class="wrap">
+    <section class="lhead">
+      <p class="lh-k">Việc làm</p>
+      <p class="lh-t">${esc(h1.replace(/^Việc làm /, ''))} <span>(${res.length})</span></p>
+      <form class="lsearch" id="lsearch" role="search">
+        <label class="ls-q">${icon('search')}<span class="sr">Từ khóa</span><input name="q" type="search" value="${esc(s.q)}" placeholder="Tên công ty, khu vực, tòa nhà…"></label>
+        <label class="ls-sel">${icon('pin')}<span class="sr">Tỉnh thành</span><select name="tinh"><option value="">Toàn quốc</option>${V.provinces.map((x) => `<option value="${x.slug}" ${x.slug === s.tinh ? 'selected' : ''}>${x.name}</option>`).join('')}</select></label>
+        <label class="ls-sel">${icon('clock')}<span class="sr">Ca làm</span><select name="ca"><option value="">Tất cả ca làm</option>${V.shifts.map((x) => `<option value="${x.id}" ${x.id === s.ca[0] ? 'selected' : ''}>${x.name}</option>`).join('')}</select></label>
+        <button class="btn btn-gold" type="submit">Tìm kiếm</button>
+      </form>
+    </section>
+    <form class="lfilter" id="lfilter" aria-label="Bộ lọc">
+      <label class="lf-tog${s.gap ? ' on' : ''}"><input type="checkbox" name="gap" ${s.gap ? 'checked' : ''}>${icon('bolt', 'ico-s')}Tuyển gấp</label>
+      <label class="lf-tog${s.cd.includes('o') ? ' on' : ''}"><input type="checkbox" name="o" ${s.cd.includes('o') ? 'checked' : ''}>${icon('bed', 'ico-s')}Có chỗ ở</label>
+      ${sel('luong', PAY.map(([v, t]) => [v, v ? t : 'Tất cả mức lương']), s.luong, 'Mức lương')}
+      ${sel('mt', [['', 'Tất cả mục tiêu'], ...V.targets.map((x) => [x.id, x.name])], s.mt[0] || '', 'Loại mục tiêu')}
+      ${sel('an', [['', 'Chế độ ăn'], ['an', 'Bao ăn']], s.cd.includes('an') ? 'an' : '', 'Chế độ ăn')}
+      ${sel('sx', SORT, s.sx, 'Sắp xếp')}
+      ${chips.length ? `<button class="lf-clear" type="button" data-unset="*">${icon('refresh', 'ico-s')}Xóa lọc</button>` : ''}
     </form>
+  </div>
 
-    <div>
-      <div class="list-bar">
-        <p><b>${res.length}</b> việc${pages > 1 ? ` · trang ${page}/${pages}` : ''}</p>
-        <div class="list-tools">
-          <button class="btn btn-quiet btn-s ftoggle" type="button" data-fopen>${icon('filter')}Bộ lọc${chips.length ? ` (${chips.length})` : ''}</button>
-          <label class="sr" for="sx">Sắp xếp</label>
-          <select class="select" id="sx">${SORT.map(([v, t]) => `<option value="${v}" ${v === s.sx ? 'selected' : ''}>${t}</option>`).join('')}</select>
+  <div class="wrap">
+    ${crumbs(crumb)}
+    <h1 class="l-h1">Tuyển dụng <b>${res.length}</b> ${esc(h1.charAt(0).toLowerCase() + h1.slice(1))} mới nhất ${today}</h1>
+    ${near ? '<p class="mute">Đang hiển thị theo vị trí gần đúng của bạn (TP.HCM).</p>' : ''}
+    ${chips.length ? `<div class="active-f">${chips.map(([k, t]) => `<button type="button" data-unset="${k}" aria-label="Bỏ lọc ${esc(t)}">${esc(t)}${icon('x', 'ico-s')}</button>`).join('')}</div>` : ''}
+    <div class="listing2">
+      <div>
+        <div class="jlist">
+          ${shown.length ? shown.map((j, i) => jobRow(j) + (i === 3 ? adRow(page) : '')).join('') : `<div class="empty"><h3>Không có tin phù hợp</h3><p class="mute">Bỏ bớt điều kiện lọc hoặc xem khu vực lân cận.</p><p><a class="btn btn-soft" href="${url.area(s.tinh)}">Bỏ bộ lọc</a></p></div>`}
         </div>
-      </div>
-      ${chips.length ? `<div class="active-f">${chips.map(([k, t]) => `<button type="button" data-unset="${k}" aria-label="Bỏ lọc ${esc(t)}">${esc(t)}${icon('x', 'ico-s')}</button>`).join('')}<button type="button" data-unset="*">Xóa tất cả</button></div>` : ''}
-      <div class="jlist">
-        ${shown.length ? shown.map((j, i) => jobRow(j) + (i === 4 ? adRow(page) : '')).join('') : `<div class="empty"><h3>Không có tin phù hợp</h3><p class="mute">Bỏ bớt điều kiện lọc hoặc xem khu vực lân cận.</p><p><a class="btn btn-line" href="${url.area(s.tinh)}">Bỏ bộ lọc</a></p></div>`}
-      </div>
-      ${pages > 1 ? `<nav class="pager" aria-label="Phân trang">${Array.from({ length: pages }, (_, i) => i + 1).map((n) => (n === page ? `<span class="on" aria-current="page">${n}</span>` : `<a href="${buildHref(s, n)}">${n}</a>`)).join('')}</nav>` : ''}
-
-      <section class="seo-text">
-        <div>
+        ${pages > 1 ? `<nav class="pager" aria-label="Phân trang">${Array.from({ length: pages }, (_, i) => i + 1).map((n) => (n === page ? `<span class="on" aria-current="page">${n}</span>` : `<a href="${buildHref(s, n)}">${n}</a>`)).join('')}</nav>` : ''}
+        <section class="seo-text">
           <h2>Làm bảo vệ ở ${esc(d || p?.name || 'các tỉnh thành')}</h2>
           ${seoIntro(p, d, base)}
-        </div>
-        <div>
-          <h2>${p ? 'Khu vực lân cận' : 'Tìm theo tỉnh thành'}</h2>
-          <ul class="linkcloud">${(p ? p.districts.filter((x) => x !== d).map((x) => `<li><a href="${url.area(p.slug, x)}">Bảo vệ ${esc(x)}</a></li>`) : V.provinces.map((x) => `<li><a href="${url.area(x.slug)}">Việc bảo vệ ${x.name}</a></li>`)).join('')}
-          ${V.targets.map((t) => `<li><a href="${url.area(s.tinh, s.quan)}?muc-tieu=${t.id}">${t.name}</a></li>`).join('')}</ul>
-        </div>
-      </section>
+          <ul class="linkcloud">${V.targets.map((t) => `<li><a href="${url.area(s.tinh, s.quan)}?muc-tieu=${t.id}">Bảo vệ ${t.name.toLowerCase()}${p ? ' ' + p.short : ''}</a></li>`).join('')}</ul>
+        </section>
+      </div>
+      <aside class="laside">
+        <section class="lbox">
+          <h2>${p ? 'Quận, huyện tại ' + p.short : 'Việc làm theo tỉnh'}</h2>
+          <ul class="lb-list">${side.map(([t, h, n, on]) => `<li><a href="${h}" class="${on ? 'on' : ''}"><span>${esc(t)}</span><em>${n}</em></a></li>`).join('')}</ul>
+        </section>
+        <section class="lbox lbox-cta">
+          <h2>Tạo hồ sơ trong 1 phút</h2>
+          <p>Nhà tuyển dụng gọi cho bạn khi có việc phù hợp. Chỉ cần số điện thoại.</p>
+          <a class="btn btn-gold btn-block" href="/ung-vien">Tạo hồ sơ ngay</a>
+        </section>
+        <section class="lbox">
+          <h2>${icon('shield')}Cảnh giác lừa đảo</h2>
+          <ul class="lb-warn"><li>Không đóng phí đồng phục, phí giữ chỗ.</li><li>Không nộp bản gốc CCCD, bằng cấp.</li><li>Lương quá cao so với mặt bằng cần hỏi kỹ.</li></ul>
+          <a class="more" href="/cam-nang/dau-hieu-cong-ty-bao-ve-lua-dao">Đọc thêm ${icon('arrow', 'ico-s')}</a>
+        </section>
+      </aside>
     </div>
   </div>`;
 
   function mount(root) {
-    const form = $('#filters', root);
-    const wide = matchMedia('(min-width: 961px)');
-    const read = () => {
-      const f = new FormData(form);
+    const goTo = (n) => go(buildHref(n), { replace: true, keepScroll: true });
+    $('#lsearch', root).addEventListener('submit', (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target);
       const tinh = f.get('tinh') || '';
-      return { tinh, quan: tinh === s.tinh ? s.quan : '', q: (f.get('q') || '').trim(), luong: f.get('luong') || '', ca: f.getAll('ca'), mt: f.getAll('mt'), cd: f.getAll('cd'), gap: !!f.get('gap'), sx: s.sx };
-    };
-    const apply = () => go(buildHref(read()), { replace: true, keepScroll: true });
-    form.addEventListener('change', (e) => {
-      if (e.target.name === 'q') return;
-      if (wide.matches) apply();
-      else $('#fapply', root).textContent = `Xem ${filterJobs(all, read()).length} việc`;
+      goTo({ ...s, tinh, quan: tinh === s.tinh ? s.quan : '', q: (f.get('q') || '').trim(), ca: f.get('ca') ? [f.get('ca')] : [] });
     });
-    form.addEventListener('submit', (e) => { e.preventDefault(); form.classList.remove('open'); apply(); });
-    form.q.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); apply(); } });
-    $('#sx', root).addEventListener('change', (e) => go(buildHref({ ...s, sx: e.target.value }), { replace: true, keepScroll: true }));
+    $('#lsearch', root).addEventListener('change', (e) => { if (e.target.tagName === 'SELECT') e.currentTarget.requestSubmit(); });
+    $('#lfilter', root).addEventListener('change', (e) => {
+      const f = new FormData(e.currentTarget);
+      const cd = [f.get('o') ? 'o' : '', f.get('an') || ''].filter(Boolean);
+      goTo({ ...s, gap: !!f.get('gap'), luong: f.get('luong') || '', mt: f.get('mt') ? [f.get('mt')] : [], cd, sx: f.get('sx') || 'moi' });
+    });
     root.addEventListener('click', (e) => {
-      if (e.target.closest('[data-fopen]')) form.classList.add('open');
-      if (e.target.closest('[data-fclose]')) form.classList.remove('open');
       const u = e.target.closest('[data-unset]');
       if (!u) return;
       const k = u.dataset.unset;
@@ -157,7 +163,7 @@ export default function ({ params: [ps, ds], query }) {
       else if (k === 'q' || k === 'luong') n[k] = '';
       else if (k === 'gap') n.gap = false;
       else { const [g, v] = k.split(':'); n[g] = n[g].filter((x) => x !== v); }
-      go(buildHref(n), { replace: true, keepScroll: true });
+      goTo(n);
     });
   }
 

@@ -52,7 +52,7 @@ export default function ({ params: [id] }) {
         <ol>${urgent.map((j) => `<li><a href="${url.job(j)}"><span class="b-place">${esc(j.district)} · ${esc(province(j.province).short)}</span><span class="b-title">${esc(j.title)}</span><span class="b-pay">${pay(j)}<small>triệu</small></span></a></li>`).join('')}</ol>
         <div class="board-foot"><a class="more" href="/viec-lam?gap=1">Tất cả việc gấp ${icon('arrow', 'ico-s')}</a></div>
       </div>
-      <aside class="jrow-ad" style="border:1px solid var(--rule)" aria-label="Quảng cáo"><span class="adlabel">Quảng cáo</span><p><b>Khóa PCCC cơ bản</b> – học 2 ngày cuối tuần, cấp chứng chỉ.</p></aside>
+      <aside class="jrow-ad" aria-label="Quảng cáo"><span class="adlabel">Quảng cáo</span><p><b>Khóa PCCC cơ bản</b> – học 2 ngày cuối tuần, cấp chứng chỉ.</p></aside>
     </aside>
   </div>`;
   return {
