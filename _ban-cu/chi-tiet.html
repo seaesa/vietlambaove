@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chi tiết tin tuyển dụng | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Chi tiết tin tuyển dụng bảo vệ: lương, ca làm, chế độ, yêu cầu và liên hệ trực tiếp nhà tuyển dụng.">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="jobs">
+<main>
+  <section class="page-head" style="padding-bottom:20px">
+    <div class="container"><nav class="breadcrumb" aria-label="Breadcrumb" id="crumbs"></nav></div>
+  </section>
+  <section class="section-sm">
+    <div class="container layout-detail" id="detail"></div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head"><h2 id="similarTitle">Việc bảo vệ tương tự gần đó</h2></div>
+      <div class="job-list" id="similar"></div>
+      <div class="link-cloud" id="internalLinks" style="margin-top:20px"></div>
+    </div>
+  </section>
+  <div class="sticky-apply" id="stickyApply"></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, $ = V.$, I = V.icon;
+  const j = V.job(V.qs('id')) || V.jobs[0];
+  const c = V.company(j.company), p = V.province(j.province), s = V.shift(j.shift), t = V.target(j.target);
+  const expired = j.daysLeft < 0;
+  const phone = c.phone.replace(/\s/g, '');
+  const zalo = 'https://zalo.me/' + phone;
+
+  document.title = `${j.title} | ViecLamBaoVe.vn`;
+  document.querySelector('meta[name=description]').content = `${j.title}. Lương ${V.salary(j)}/tháng, ${s.name}, ${j.district}, ${p.name}. ${c.name}.`;
+  $('#crumbs').innerHTML = `<a href="index.html">Trang chủ</a><span class="sep">/</span><a href="viec-lam.html">Việc làm bảo vệ</a><span class="sep">/</span><a href="viec-lam.html?tinh=${p.slug}">${p.name}</a><span class="sep">/</span><a href="viec-lam.html?tinh=${p.slug}&quan=${encodeURIComponent(j.district)}">${j.district}</a>`;
+
+  /* JobPosting structured data – chỉ xuất khi tin còn hạn */
+  if (!expired) {
+    const ld = document.createElement('script'); ld.type = 'application/ld+json';
+    const valid = new Date(Date.now() + j.daysLeft * 864e5).toISOString().slice(0, 10);
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'JobPosting', title: j.title,
+      description: `Tuyển ${j.qty} nhân viên bảo vệ tại ${j.address}. ${s.name}.`,
+      datePosted: new Date(Date.now() - j.posted * 864e5).toISOString().slice(0, 10), validThrough: valid,
+      employmentType: 'FULL_TIME', totalJobOpenings: j.qty,
+      hiringOrganization: { '@type': 'Organization', name: c.name },
+      jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', streetAddress: j.address, addressLocality: j.district, addressRegion: p.name, addressCountry: 'VN' } },
+      baseSalary: { '@type': 'MonetaryAmount', currency: 'VND', value: { '@type': 'QuantitativeValue', minValue: j.salaryMin * 1e6, maxValue: j.salaryMax * 1e6, unitText: 'MONTH' } }
+    });
+    document.head.appendChild(ld);
+  } else {
+    document.head.insertAdjacentHTML('beforeend', '<meta name="robots" content="noindex">');
+  }
+
+  const perks = [
+    j.housing && 'Hỗ trợ chỗ ở miễn phí gần mục tiêu',
+    j.meals && 'Bao ăn tại mục tiêu / bếp ăn tập thể',
+    'Cấp phát đồng phục, công cụ hỗ trợ miễn phí – không thu tiền',
+    'Đóng BHXH, BHYT đầy đủ sau thời gian thử việc',
+    'Lương trả đúng hạn ngày 5 hàng tháng, thưởng lễ Tết, tháng 13',
+    'Được đào tạo nghiệp vụ bảo vệ, PCCC miễn phí'
+  ].filter(Boolean);
+
+  $('#detail').innerHTML = `
+  <div class="stack">
+    <article class="card"><div class="card-body">
+      ${expired ? `<div class="expired-box">${I('alert')}<div><b>Tin đã hết hạn</b><br>Nhà tuyển dụng đã ngừng nhận hồ sơ cho tin này. Số điện thoại đã được ẩn. Xem các việc tương tự gần đó bên dưới.</div></div>` : ''}
+      <div class="detail-head">
+        ${V.logo(c, 'lg')}
+        <div>
+          <div class="row" style="gap:6px;margin-bottom:8px">
+            ${j.tier === 'vip' ? `<span class="badge badge-vip">${I('star', 'ico-sm')} VIP</span>` : ''}
+            ${j.urgent && !expired ? `<span class="badge badge-urgent">${I('bolt', 'ico-sm')} Tuyển gấp</span>` : ''}
+            ${c.verified ? `<span class="badge badge-verified">${I('shieldcheck', 'ico-sm')} Công ty đã xác thực</span>` : `<span class="badge badge-pending">Chưa xác thực</span>`}
+          </div>
+          <h1>${V.esc(j.title)}</h1>
+          <a href="cong-ty.html?id=${c.id}" class="row" style="gap:6px;font-weight:600">${c.name}</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item hl"><span>Mức lương</span><b>${V.salary(j)}/tháng</b></div>
+        <div class="info-item"><span>Ca làm</span><b>${s.name}</b></div>
+        <div class="info-item"><span>Số lượng</span><b>${j.qty} người</b></div>
+        <div class="info-item"><span>Khu vực</span><b>${j.district}, ${p.short}</b></div>
+        <div class="info-item"><span>Loại mục tiêu</span><b>${t.name}</b></div>
+        <div class="info-item"><span>Ăn ở</span><b>${[j.housing ? 'Bao ở' : '', j.meals ? 'Bao ăn' : ''].filter(Boolean).join(' · ') || 'Không'}</b></div>
+      </div>
+      <p class="small muted row" style="gap:16px;margin-top:12px">
+        <span class="row" style="gap:6px">${I('clock', 'ico-sm')} Đăng ${V.ago(j.posted).toLowerCase()}</span>
+        <span class="row" style="gap:6px">${I('eye', 'ico-sm')} ${j.views.toLocaleString('vi-VN')} lượt xem</span>
+        <span class="row" style="gap:6px">${I('file', 'ico-sm')} ${expired ? 'Đã hết hạn' : 'Hết hạn sau ' + j.daysLeft + ' ngày'}</span>
+      </p>
+    </div></article>
+
+    <article class="card"><div class="card-body prose">
+      <h2 style="margin-top:0">Mô tả công việc</h2>
+      <ul>
+        <li>Trực bảo vệ tại mục tiêu: <b>${j.address}</b>.</li>
+        <li>Kiểm soát ra vào, hướng dẫn khách, ghi sổ giao ca theo quy trình.</li>
+        <li>Tuần tra định kỳ, phát hiện và xử lý ban đầu sự cố an ninh, cháy nổ.</li>
+        <li>Phối hợp ban quản lý mục tiêu và chỉ huy ca trong công tác an ninh trật tự.</li>
+      </ul>
+      <h2>Quyền lợi</h2>
+      <ul>${perks.map(x => `<li>${x}</li>`).join('')}</ul>
+      <h2>Yêu cầu</h2>
+      <ul>
+        <li>${j.age}${j.height !== 'Không yêu cầu' ? ', chiều cao ' + j.height.toLowerCase() : ''}.</li>
+        <li>Sức khỏe tốt, không tiền án tiền sự, có CCCD.</li>
+        <li>Ưu tiên đã xuất ngũ, công an nghĩa vụ, có chứng chỉ PCCC hoặc võ thuật.</li>
+      </ul>
+      <h2>Hồ sơ & cách ứng tuyển</h2>
+      <p>Gọi điện hoặc nhắn Zalo trực tiếp, hoặc bấm <b>Ứng tuyển nhanh</b> để gửi hồ sơ 1 chạm. Mang CCCD, sơ yếu lý lịch, giấy khám sức khỏe khi đến phỏng vấn.</p>
+      <blockquote>${I('alert', 'ico-sm')} <b>Lưu ý an toàn:</b> ViecLamBaoVe.vn không cho phép thu phí đồng phục, tiền cọc hay phí giữ chỗ. Nếu bị yêu cầu nộp tiền, hãy báo cáo ngay.</blockquote>
+      <div class="row" style="margin-top:12px">
+        <button class="btn btn-danger btn-sm" data-report="${j.id}">${I('flag', 'ico-sm')} Báo cáo tin này</button>
+        <button class="btn btn-outline btn-sm" id="shareBtn">${I('send', 'ico-sm')} Chia sẻ</button>
+      </div>
+    </div></article>
+  </div>
+
+  <aside class="stack sticky">
+    <div class="card contact-card"><div class="card-body">
+      <div class="salary" style="font-size:1.5rem">${V.salary(j)}<small>/tháng</small></div>
+      <p class="small muted">${j.qty} vị trí · ${s.name}</p>
+      ${expired
+        ? `<button class="btn btn-outline btn-block" disabled>${I('lock', 'ico-sm')} Đã ẩn số điện thoại</button><a class="btn btn-navy btn-block" href="viec-lam.html?tinh=${p.slug}">Xem việc còn tuyển tại ${p.short}</a>`
+        : `<a class="btn btn-call btn-block btn-lg" href="tel:${phone}">${I('phone')} Gọi ngay ${c.phone}</a>
+           <a class="btn btn-zalo btn-block btn-lg" href="${zalo}" target="_blank" rel="noopener">${I('chat')} Nhắn Zalo</a>
+           <button class="btn btn-primary btn-block" data-apply="${j.id}">${I('send', 'ico-sm')} Ứng tuyển nhanh</button>`}
+      <button class="btn btn-ghost btn-block" data-save="${j.id}" id="saveBtn">${I('heart', 'ico-sm')} <span>${V.isSaved(j.id) ? 'Đã lưu tin' : 'Lưu tin'}</span></button>
+    </div></div>
+
+    <div class="card"><div class="card-body">
+      <div class="row" style="gap:12px;margin-bottom:12px">${V.logo(c)}<div><b style="color:var(--ink)">${c.short}</b><div class="small muted">${c.size}</div></div></div>
+      ${c.verified ? `<div class="badge badge-verified" style="margin-bottom:10px">${I('shieldcheck', 'ico-sm')} Đã xác thực MST & giấy phép ANTT</div>` : ''}
+      <p class="small muted" style="margin-bottom:6px">${I('pin', 'ico-sm')} ${c.address}</p>
+      <p class="small muted">${I('star', 'ico-sm')} ${c.rating}/5 từ ${c.reviews} đánh giá</p>
+      <a class="btn btn-outline btn-block btn-sm" href="cong-ty.html?id=${c.id}">Xem trang công ty</a>
+    </div></div>
+
+    <div class="warn-box">${I('shield')}<div><b>Tìm việc an toàn</b><br>Không chuyển khoản trước, không nộp giấy tờ gốc, kiểm tra huy hiệu xác thực.</div></div>
+
+    <div class="ad-slot ad-side"><span class="ad-label">Quảng cáo</span>${I('shield', 'ico-lg')}<b>Đồng phục bảo vệ may sẵn</b><span class="small">Giao toàn quốc trong 48h</span></div>
+  </aside>`;
+
+  if (!expired) {
+    $('#stickyApply').innerHTML = `<a class="btn btn-call" href="tel:${phone}">${I('phone', 'ico-sm')} Gọi ngay</a><a class="btn btn-zalo" href="${zalo}" target="_blank" rel="noopener">${I('chat', 'ico-sm')} Zalo</a>`;
+  }
+  $('#saveBtn').addEventListener('click', () => setTimeout(() => $('#saveBtn span').textContent = V.isSaved(j.id) ? 'Đã lưu tin' : 'Lưu tin'));
+  $('#shareBtn').addEventListener('click', async () => {
+    try { if (navigator.share) await navigator.share({ title: j.title, url: location.href }); else { await navigator.clipboard.writeText(location.href); V.toast('Đã sao chép đường dẫn tin', 'copy'); } } catch (e) {}
+  });
+
+  /* Liên kết nội bộ & việc tương tự */
+  const sim = V.activeJobs().filter(x => x.id !== j.id).sort((a, b) => (b.province === j.province) - (a.province === j.province) || (b.target === j.target) - (a.target === j.target)).slice(0, 3);
+  $('#similarTitle').textContent = `Việc bảo vệ khác tại ${p.name}`;
+  $('#similar').innerHTML = sim.map(V.jobCard).join('');
+  $('#internalLinks').innerHTML = [
+    [`viec-lam.html?tinh=${p.slug}&quan=${encodeURIComponent(j.district)}`, `Việc bảo vệ khác tại ${j.district}`],
+    [`viec-lam.html?luong=9`, 'Việc lương trên 9 triệu'],
+    [`viec-lam.html?muc-tieu=${t.id}`, `Tuyển bảo vệ ${t.name.toLowerCase()}`],
+    [`viec-lam.html?ca=${s.id}`, `Việc bảo vệ ${s.name.toLowerCase()}`],
+    [`viec-lam.html?bao-o=1&tinh=${p.slug}`, `Bảo vệ bao ăn ở tại ${p.short}`]
+  ].map(([h, x]) => `<a href="${h}">${x}</a>`).join('');
+})();
+</script>
+</body>
+</html>

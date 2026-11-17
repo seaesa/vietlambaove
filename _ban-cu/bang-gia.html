@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bảng giá dịch vụ đăng tin tuyển bảo vệ | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Bảng giá tin VIP, tin Gấp, đẩy tin, điểm xem hồ sơ ứng viên và banner quảng cáo trên ViecLamBaoVe.vn.">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="pricing">
+<main>
+  <section class="page-head" style="padding:48px 0 56px;text-align:center">
+    <div class="container">
+      <span class="eyebrow" style="color:var(--gold-light)">Bảng giá dịch vụ</span>
+      <h1>Tuyển đủ người nhanh hơn, chi phí rõ ràng</h1>
+      <p style="margin:0 auto">Đăng tin miễn phí cho mọi công ty. Chỉ trả tiền khi bạn cần nổi bật hơn, tuyển nhanh hơn. Giá chưa bao gồm VAT.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-4" id="plans" style="align-items:stretch"></div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">Dịch vụ lẻ</span><h2>Đẩy tin, điểm xem hồ sơ & banner</h2></div></div>
+      <div class="card table-wrap" id="banner"><table class="table"><thead><tr><th>Dịch vụ</th><th>Mô tả</th><th>Giá</th><th></th></tr></thead><tbody id="addons"></tbody></table></div>
+      <div class="row" style="margin-top:20px;gap:14px">
+        <span class="muted small">Thanh toán:</span>
+        <div class="pay-methods"><span>QR ngân hàng</span><span>VNPay</span><span>MoMo</span><span>Hóa đơn VAT</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:820px">
+      <div class="section-head" style="justify-content:center;text-align:center"><div><span class="eyebrow">Câu hỏi thường gặp</span><h2>Thắc mắc về gói dịch vụ</h2></div></div>
+      <div class="faq">
+        <details open><summary>Tin miễn phí khác tin VIP thế nào?</summary><p>Tin miễn phí hiển thị theo thứ tự thời gian. Tin VIP có khung vàng, nhãn VIP, luôn nằm đầu danh sách và trang khu vực, trung bình nhận gấp 5 lần lượt xem.</p></details>
+        <details><summary>Điểm xem hồ sơ dùng để làm gì?</summary><p>Mỗi điểm mở được số điện thoại của 1 ứng viên trong mục Tìm ứng viên. Mở lại cùng ứng viên không bị trừ điểm.</p></details>
+        <details><summary>Tin hết hạn thì sao?</summary><p>Tin tự ẩn sau thời hạn đã chọn (mặc định 30 ngày). Bạn được nhắc qua Zalo/email trước 3 ngày và có thể gia hạn bằng 1 nút.</p></details>
+        <details><summary>Có hoàn tiền nếu tin bị từ chối?</summary><p>Có. Nếu tin trả phí bị từ chối do vi phạm quy chế không cố ý, bạn được sửa và đăng lại, hoặc hoàn tiền vào tài khoản trong 3 ngày làm việc.</p></details>
+        <details><summary>Có xuất hóa đơn VAT không?</summary><p>Có. Chọn "Xuất hóa đơn VAT" khi thanh toán, hóa đơn điện tử gửi về email trong 24 giờ.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" style="padding-bottom:56px">
+    <div class="container">
+      <div class="cta-band"><div><h2>Cần báo giá cho công ty trên 500 nhân viên?</h2><p style="margin:0">Liên hệ để nhận gói doanh nghiệp, API kết nối và hỗ trợ riêng.</p></div>
+      <div class="row"><a class="btn btn-primary btn-lg" href="tel:19001234">Gọi 1900 1234</a><a class="btn btn-outline btn-lg" href="chinh-sach.html#lien-he">Gửi yêu cầu</a></div></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, I = V.icon;
+  V.$('#plans').innerHTML = V.packages.map(p => `<div class="price-card ${p.featured ? 'featured' : ''}">
+    <h3>${p.name}</h3><p class="small muted" style="margin:0">${p.desc}</p>
+    <div class="price">${p.price ? V.money(p.price) : '0đ'}</div><small class="muted">${p.unit || 'mãi mãi'}</small>
+    <ul>${p.features.map(f => `<li>${I('check')}${f}</li>`).join('')}</ul>
+    <a class="btn ${p.featured ? 'btn-primary' : 'btn-outline'} btn-block" href="${p.id === 'enterprise' ? 'chinh-sach.html#lien-he' : p.id === 'free' ? 'dang-nhap.html' : 'nha-tuyen-dung.html#goi-dich-vu'}">${p.cta}</a>
+  </div>`).join('');
+  V.$('#addons').innerHTML = V.addons.map(a => `<tr><td><b style="color:var(--ink)">${a.name}</b></td><td class="muted">${a.desc}</td><td><b class="salary" style="font-size:1rem">${a.price}</b></td><td style="text-align:right"><a class="btn btn-outline btn-sm" href="nha-tuyen-dung.html#goi-dich-vu">Mua</a></td></tr>`).join('');
+})();
+</script>
+</body>
+</html>

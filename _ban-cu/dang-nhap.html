@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đăng nhập / Đăng ký | ViecLamBaoVe.vn</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="auth">
+<main class="auth-wrap">
+  <section class="auth-side">
+    <img src="assets/img/logo-shield.webp" width="120" height="124" alt="">
+    <h2>Một tài khoản – tìm việc hoặc tuyển người trong vài phút</h2>
+    <p>Đăng nhập bằng số điện thoại, không cần nhớ mật khẩu.</p>
+    <ul>
+      <li><span data-i="check"></span> Ứng tuyển 1 chạm, lưu tin để xem lại</li>
+      <li><span data-i="check"></span> Nhận thông báo việc mới gần nhà qua Zalo/SMS</li>
+      <li><span data-i="check"></span> Nhà tuyển dụng đăng tin bằng AI trong 1 phút</li>
+      <li><span data-i="check"></span> Dữ liệu cá nhân được bảo vệ theo Nghị định 13/2023</li>
+    </ul>
+  </section>
+
+  <section class="auth-main">
+    <div class="auth-card">
+      <div class="steps-dots"><i class="on"></i><i id="dot2"></i><i id="dot3"></i></div>
+
+      <!-- Bước 1: SĐT -->
+      <form id="step1" class="stack">
+        <h1 style="font-size:1.6rem">Đăng nhập hoặc đăng ký</h1>
+        <p class="muted">Nhập số điện thoại, chúng tôi sẽ gửi mã OTP qua SMS/Zalo.</p>
+        <div class="field">
+          <label for="phone">Số điện thoại</label>
+          <input class="input" id="phone" inputmode="tel" autocomplete="tel" placeholder="09xx xxx xxx" required pattern="0[0-9 ]{8,11}" style="font-size:1.15rem">
+        </div>
+        <button class="btn btn-primary btn-block btn-lg">Nhận mã OTP</button>
+        <div class="divider">hoặc</div>
+        <button type="button" class="btn btn-outline btn-block" data-social="Google"><span data-i="google"></span> Tiếp tục với Google</button>
+        <button type="button" class="btn btn-zalo btn-block" data-social="Zalo"><span data-i="chat"></span> Tiếp tục với Zalo</button>
+        <p class="small muted" style="text-align:center">Bằng việc tiếp tục, bạn đồng ý với <a href="chinh-sach.html#dieu-khoan">Điều khoản</a> và <a href="chinh-sach.html#bao-mat">Chính sách bảo mật</a>.</p>
+      </form>
+
+      <!-- Bước 2: OTP -->
+      <form id="step2" class="stack hide">
+        <h1 style="font-size:1.6rem">Nhập mã xác thực</h1>
+        <p class="muted">Mã 6 số đã gửi tới <b id="phoneShow"></b>. <a href="#" id="changePhone">Đổi số</a></p>
+        <div class="otp" id="otp"></div>
+        <p class="small muted" style="text-align:center">Bản demo: nhập 6 số bất kỳ. <a href="#" id="resend">Gửi lại mã</a> <span id="countdown"></span></p>
+        <button class="btn btn-primary btn-block btn-lg">Xác nhận</button>
+      </form>
+
+      <!-- Bước 3: Chọn loại tài khoản -->
+      <form id="step3" class="stack hide">
+        <h1 style="font-size:1.6rem">Bạn đến đây để…</h1>
+        <div class="choice-group" style="grid-template-columns:1fr">
+          <label class="choice"><input type="radio" name="role" value="candidate" checked><span class="ic" data-i="search"></span><div><b>Tôi tìm việc</b><span>Bảo vệ, vệ sĩ, chỉ huy mục tiêu</span></div></label>
+          <label class="choice"><input type="radio" name="role" value="employer"><span class="ic" data-i="briefcase"></span><div><b>Tôi tuyển dụng</b><span>Công ty dịch vụ bảo vệ, doanh nghiệp tự tuyển</span></div></label>
+        </div>
+        <div class="field"><label for="name">Họ tên / Tên công ty</label><input class="input" id="name" required placeholder="VD: Nguyễn Văn An"></div>
+        <label class="check small"><input type="checkbox" required> Tôi đồng ý cho ViecLamBaoVe.vn xử lý dữ liệu cá nhân theo chính sách bảo mật.</label>
+        <button class="btn btn-primary btn-block btn-lg">Hoàn tất</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, $ = V.$;
+  $('#otp').innerHTML = Array.from({ length: 6 }, (_, i) => `<input inputmode="numeric" maxlength="1" aria-label="Số thứ ${i + 1}" ${i === 0 ? 'autocomplete="one-time-code"' : ''}>`).join('');
+  V.$$('[data-i]').forEach(el => el.outerHTML = V.icon(el.dataset.i));
+  const show = (n) => { ['#step1', '#step2', '#step3'].forEach((s, i) => $(s).classList.toggle('hide', i !== n - 1)); $('#dot2').classList.toggle('on', n >= 2); $('#dot3').classList.toggle('on', n >= 3); };
+  let timer;
+  const startCountdown = () => {
+    let s = 60; clearInterval(timer);
+    timer = setInterval(() => { $('#countdown').textContent = s > 0 ? `(${s--}s)` : ''; if (s < 0) clearInterval(timer); }, 1000);
+  };
+
+  $('#step1').addEventListener('submit', e => {
+    e.preventDefault();
+    $('#phoneShow').textContent = $('#phone').value;
+    show(2); startCountdown(); V.$$('#otp input')[0].focus();
+    V.toast('Đã gửi mã OTP tới ' + $('#phone').value, 'mail');
+  });
+  V.$$('[data-social]').forEach(b => b.addEventListener('click', () => { V.toast('Đang kết nối ' + b.dataset.social + '…'); setTimeout(() => show(3), 600); }));
+  $('#changePhone').addEventListener('click', e => { e.preventDefault(); show(1); });
+  $('#resend').addEventListener('click', e => { e.preventDefault(); startCountdown(); V.toast('Đã gửi lại mã OTP', 'mail'); });
+
+  const boxes = V.$$('#otp input');
+  boxes.forEach((b, i) => {
+    b.addEventListener('input', () => { b.value = b.value.replace(/\D/g, ''); if (b.value && boxes[i + 1]) boxes[i + 1].focus(); });
+    b.addEventListener('keydown', e => { if (e.key === 'Backspace' && !b.value && boxes[i - 1]) boxes[i - 1].focus(); });
+    b.addEventListener('paste', e => { const d = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6); if (d) { e.preventDefault(); d.split('').forEach((ch, k) => boxes[k] && (boxes[k].value = ch)); boxes[Math.min(d.length, 5)].focus(); } });
+  });
+  $('#step2').addEventListener('submit', e => {
+    e.preventDefault();
+    if (boxes.some(b => !b.value)) return V.toast('Vui lòng nhập đủ 6 số', 'alert');
+    show(3);
+  });
+  $('#step3').addEventListener('submit', e => {
+    e.preventDefault();
+    const role = $('[name=role]:checked').value;
+    V.store.set('user', { name: $('#name').value, phone: $('#phone').value, role });
+    location.href = role === 'employer' ? 'nha-tuyen-dung.html' : 'ung-vien.html';
+  });
+})();
+</script>
+</body>
+</html>

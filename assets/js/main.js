@@ -1,0 +1,190 @@
+// Điểm vào: khai báo tuyến, vẽ khung trang, xử lý sự kiện chung
+import { $, icon, esc, user, store, toggleSave, applyJob, reportJob, toast, SITE } from './core.js';
+import { route, onRender, match, clean, go } from './router.js';
+
+route(/^\/$/, () => import('./pages/home.js'));
+route(/^\/viec-lam(?:\/([a-z0-9-]+))?(?:\/([a-z0-9-]+))?$/, () => import('./pages/jobs.js'));
+route(/^\/tin\/(?:[a-z0-9-]*-)?(\d+)$/, () => import('./pages/job.js'));
+route(/^\/cong-ty\/([a-z0-9-]+)$/, () => import('./pages/company.js'));
+route(/^\/cam-nang$/, () => import('./pages/blog.js'));
+route(/^\/cam-nang\/([a-z0-9-]+)$/, () => import('./pages/post.js'));
+route(/^\/bang-gia$/, () => import('./pages/pricing.js'));
+route(/^\/dang-nhap$/, () => import('./pages/auth.js'));
+route(/^\/ung-vien(?:\/([a-z-]+))?$/, () => import('./pages/candidate.js'));
+route(/^\/nha-tuyen-dung(?:\/([a-z-]+))?$/, () => import('./pages/employer.js'));
+route(/^\/quan-tri(?:\/([a-z-]+))?$/, () => import('./pages/admin.js'));
+route(/^\/chinh-sach(?:\/([a-z-]+))?$/, () => import('./pages/policy.js'));
+
+const NAV = [
+  ['jobs', '/viec-lam', 'Việc làm'],
+  ['urgent', '/viec-lam?gap=1', 'Tuyển gấp'],
+  ['blog', '/cam-nang', 'Cẩm nang'],
+  ['pricing', '/bang-gia', 'Bảng giá'],
+  ['employer', '/nha-tuyen-dung', 'Nhà tuyển dụng']
+];
+
+function acctLink(u) {
+  if (!u) return { href: '/dang-nhap', label: 'Đăng nhập' };
+  return { href: u.role === 'employer' ? '/nha-tuyen-dung' : '/ung-vien', label: u.role === 'employer' ? 'Quản lý tuyển dụng' : esc(u.name?.split(' ').pop() || 'Tài khoản') };
+}
+
+function header(navKey) {
+  const u = user();
+  const a = acctLink(u);
+  const postHref = u?.role === 'employer' ? '/nha-tuyen-dung/dang-tin' : '/dang-nhap?vai-tro=nha-tuyen-dung';
+  $('#header').innerHTML = `
+  <div class="util"><div class="wrap">
+    <span>Mọi công ty trên trang đã nộp <b>giấy phép kinh doanh dịch vụ bảo vệ</b>. Ứng viên không trả bất kỳ khoản phí nào.</span>
+    <span class="u-r"><a href="/chinh-sach/lien-he">Hỗ trợ: 1900 6868</a></span>
+  </div></div>
+  <header class="mast"><div class="wrap">
+    <a class="brand" href="/" aria-label="Việc Làm Bảo Vệ – Trang chủ">
+      <img src="/assets/img/logo-shield.webp" alt="" width="40" height="41">
+      <span class="brand-word"><small>VIỆC LÀM</small><span>BẢO VỆ</span></span>
+    </a>
+    <nav class="nav" aria-label="Chính">${NAV.map(([k, h, t]) => `<a href="${h}" class="${k === navKey ? 'on' : ''}">${t}</a>`).join('')}</nav>
+    <div class="mast-act">
+      <a class="acct" href="${a.href}">${icon('user')}${a.label}</a>
+      <a class="btn btn-primary" href="${postHref}">Đăng tin tuyển dụng</a>
+      <button class="burger" type="button" data-drawer aria-label="Mở menu" aria-expanded="false">${icon('menu')}</button>
+    </div>
+  </div></header>
+  <div class="drawer" id="drawer"><div class="drawer-bg" data-undrawer></div>
+    <div class="drawer-panel" role="dialog" aria-label="Menu">
+      <button class="x" type="button" data-undrawer aria-label="Đóng menu">${icon('x')}</button>
+      ${NAV.map(([, h, t]) => `<a href="${h}">${t}</a>`).join('')}
+      <a href="/chinh-sach/lien-he">Liên hệ</a>
+      <a href="${a.href}">${u ? 'Tài khoản của tôi' : 'Đăng nhập / Đăng ký'}</a>
+      ${u ? '<a href="#" data-logout>Đăng xuất</a>' : ''}
+      <a class="btn btn-primary btn-l" href="${postHref}">Đăng tin tuyển dụng</a>
+    </div>
+  </div>`;
+}
+
+function tabbar(path) {
+  const u = user();
+  const items = [
+    ['/', 'Trang chủ', 'building', path === '/'],
+    ['/viec-lam', 'Tìm việc', 'search', path.startsWith('/viec-lam') || path.startsWith('/tin/')],
+    ['/ung-vien/da-luu', 'Đã lưu', 'bookmark', path === '/ung-vien/da-luu'],
+    [u ? acctLink(u).href : '/dang-nhap', 'Tài khoản', 'user', (path.startsWith('/ung-vien') && path !== '/ung-vien/da-luu') || path.startsWith('/dang-nhap') || path.startsWith('/nha-tuyen-dung')]
+  ];
+  return `<nav class="tabbar" aria-label="Điều hướng nhanh">${items.map(([h, t, ic, on]) => `<a href="${h}" class="${on ? 'on' : ''}">${icon(ic)}${t}</a>`).join('')}</nav>`;
+}
+
+function footer(path) {
+  const V = window.VLBV;
+  $('#footer').innerHTML = `<footer class="foot"><div class="wrap">
+    <div class="foot-top">
+      <div>
+        <a class="brand" href="/"><img src="/assets/img/logo-shield.webp" alt="" width="40" height="41"><span class="brand-word"><small>VIỆC LÀM</small><span>BẢO VỆ</span></span></a>
+        <p class="foot-note">Chuyên trang tuyển dụng cho ngành bảo vệ. Tin được kiểm duyệt trước khi hiển thị, công ty được xác thực giấy phép.</p>
+      </div>
+      <div><h4>Theo khu vực</h4><ul>${V.provinces.map((p) => `<li><a href="/viec-lam/${p.slug}">Bảo vệ ${p.short}</a></li>`).join('')}</ul></div>
+      <div><h4>Theo mục tiêu</h4><ul>${V.targets.map((t) => `<li><a href="/viec-lam?muc-tieu=${t.id}">${t.name}</a></li>`).join('')}</ul></div>
+      <div><h4>Nhà tuyển dụng</h4><ul>
+        <li><a href="/nha-tuyen-dung/dang-tin">Đăng tin tuyển dụng</a></li>
+        <li><a href="/bang-gia">Bảng giá dịch vụ</a></li>
+        <li><a href="/nha-tuyen-dung/tim-ung-vien">Tìm ứng viên</a></li>
+        <li><a href="/nha-tuyen-dung/xac-thuc">Xác thực công ty</a></li>
+        <li><a href="/chinh-sach/quy-che">Quy định đăng tin</a></li>
+      </ul></div>
+      <div><h4>Thông tin</h4><ul>
+        <li><a href="/cam-nang">Cẩm nang nghề bảo vệ</a></li>
+        <li><a href="/chinh-sach/dieu-khoan">Điều khoản sử dụng</a></li>
+        <li><a href="/chinh-sach/bao-mat">Chính sách bảo mật</a></li>
+        <li><a href="/chinh-sach/lien-he">Liên hệ</a></li>
+        <li><a href="/quan-tri">Trang quản trị</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>© 2026 ViecLamBaoVe.vn – Bản giao diện mẫu, dữ liệu minh họa.</span><span>Hotline 1900 6868 · hotro@vieclambaove.vn</span></div>
+  </div></footer>${tabbar(path)}`;
+}
+
+function setMeta(name, content, attr = 'name') {
+  let m = document.head.querySelector(`meta[${attr}="${name}"]`);
+  if (!content) { m?.remove(); return; }
+  if (!m) { m = document.createElement('meta'); m.setAttribute(attr, name); document.head.append(m); }
+  m.content = content;
+}
+
+const notFound = async () => ({
+  default: () => ({
+    title: 'Không tìm thấy trang', noindex: true,
+    html: `<div class="wrap nf"><b>404</b><h1>Trang này không còn tồn tại</h1><p class="mute">Có thể tin đã bị gỡ hoặc đường dẫn bị gõ sai.</p><p><a class="btn btn-primary" href="/viec-lam">Xem việc đang tuyển</a> <a class="btn btn-line" href="/">Về trang chủ</a></p></div>`
+  })
+});
+
+const main = $('#main');
+let first = true;
+async function render({ keepScroll = false } = {}) {
+  const want = clean(location.href);
+  if (want !== location.pathname + location.search + location.hash) history.replaceState({}, '', want);
+  const path = location.pathname;
+  const m = match(path) || { load: notFound, params: [] };
+  let page;
+  try {
+    const mod = await m.load();
+    page = await mod.default({ params: m.params, query: new URLSearchParams(location.search), path });
+  } catch (err) {
+    console.error(err);
+    page = (await notFound()).default();
+  }
+  if (page.redirect) return go(page.redirect, { replace: true });
+
+  document.dispatchEvent(new Event('vlbv:leave'));
+  main.innerHTML = page.html;
+  document.title = page.title ? `${page.title} | Việc Làm Bảo Vệ` : 'Việc Làm Bảo Vệ – Tuyển dụng bảo vệ, vệ sĩ toàn quốc';
+  setMeta('description', page.desc || 'Chuyên trang việc làm ngành bảo vệ: lương, ca làm, chỗ ở ghi rõ trong từng tin.');
+  setMeta('robots', page.noindex ? 'noindex, follow' : '');
+  setMeta('og:title', document.title, 'property');
+  document.head.querySelector('link[rel=canonical]').href = SITE + (page.canonical || path);
+  document.head.querySelectorAll('script[data-ld]').forEach((s) => s.remove());
+  [].concat(page.ld || []).forEach((obj) => {
+    const s = document.createElement('script');
+    s.type = 'application/ld+json'; s.dataset.ld = ''; s.textContent = JSON.stringify(obj);
+    document.head.append(s);
+  });
+  document.body.classList.toggle('has-mbar', !!page.mbar);
+  document.body.classList.toggle('has-tabbar', page.tabbar !== false);
+
+  header(page.nav);
+  footer(path);
+  page.mount?.(main);
+
+  if (!keepScroll) {
+    const target = location.hash && document.getElementById(location.hash.slice(1));
+    target ? target.scrollIntoView() : window.scrollTo(0, 0);
+    if (!first) main.focus({ preventScroll: true });
+  }
+  first = false;
+}
+onRender(render);
+
+/* ---------- Sự kiện chung ---------- */
+document.addEventListener('click', (e) => {
+  const t = e.target;
+  const save = t.closest('[data-save]');
+  if (save) {
+    e.preventDefault();
+    const on = toggleSave(save.dataset.save);
+    document.querySelectorAll(`[data-save="${save.dataset.save}"]`).forEach((b) => {
+      b.setAttribute('aria-pressed', on);
+      if (b.dataset.label) b.lastChild.textContent = on ? ' Đã lưu' : ' Lưu tin';
+    });
+    toast(on ? 'Đã lưu tin. Xem lại trong mục Đã lưu.' : 'Đã bỏ lưu tin.', 'bookmark');
+    return;
+  }
+  const ap = t.closest('[data-apply]');
+  if (ap) { e.preventDefault(); applyJob(ap.dataset.apply); return; }
+  const rp = t.closest('[data-report]');
+  if (rp) { e.preventDefault(); reportJob(rp.dataset.report); return; }
+  if (t.closest('[data-drawer]')) { $('#drawer').classList.add('open'); $('[data-drawer]').setAttribute('aria-expanded', 'true'); $('#drawer .x').focus(); return; }
+  if (t.closest('[data-undrawer]') || t.closest('#drawer a')) { $('#drawer')?.classList.remove('open'); }
+  const tt = t.closest('[data-toast]');
+  if (tt) toast(tt.dataset.toast);
+  if (t.closest('[data-logout]')) { e.preventDefault(); store.del('user'); toast('Đã đăng xuất.'); go('/'); }
+});
+document.addEventListener('vlbv:esc', () => $('#drawer')?.classList.remove('open'));
+
+render();

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Việc Làm Bảo Vệ, Vệ Sĩ Uy Tín – Đi Làm Ngay 2026 | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Tìm việc làm bảo vệ, vệ sĩ lương cao, bao ăn ở tại TP.HCM, Hà Nội, Bình Dương, Đồng Nai. 100% công ty xác thực giấy phép ANTT, gọi điện hoặc nhắn Zalo nhận việc ngay.">
+  <link rel="canonical" href="https://vieclambaove.vn/">
+  <meta property="og:title" content="ViecLamBaoVe.vn – Việc làm bảo vệ uy tín">
+  <meta property="og:description" content="Nền tảng tuyển dụng chuyên ngành bảo vệ – vệ sĩ, có AI hỗ trợ đăng tin.">
+  <meta property="og:image" content="assets/img/logo-shield.png">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"ViecLamBaoVe.vn","url":"https://vieclambaove.vn/","potentialAction":{"@type":"SearchAction","target":"https://vieclambaove.vn/viec-lam?q={q}","query-input":"required name=q"}}</script>
+</head>
+<body data-page="home">
+<main>
+  <section class="hero">
+    <div class="container">
+      <div>
+        <div class="hero-pill"><span class="dot" id="pillIcon"></span> 100% công ty có giấy phép ANTT · Không thu phí môi giới</div>
+        <h1>Tìm việc bảo vệ uy tín<br><em>đi làm ngay hôm nay</em></h1>
+        <p class="lead">Hàng nghìn mục tiêu tòa nhà, khu công nghiệp, ngân hàng đang tuyển. Gọi điện hoặc nhắn Zalo cho nhà tuyển dụng – không cần CV.</p>
+        <form class="search-box" action="viec-lam.html" role="search">
+          <label class="search-field"><span class="sr-only">Vị trí, mục tiêu</span><span data-i="search"></span>
+            <input name="q" placeholder="VD: bảo vệ chung cư, ca đêm, KCN…" autocomplete="off"></label>
+          <label class="search-field"><span class="sr-only">Tỉnh / thành phố</span><span data-i="pin"></span>
+            <select name="tinh" id="heroProvince"><option value="">Tất cả khu vực</option></select></label>
+          <button class="btn btn-primary btn-lg" type="submit"><span data-i="search"></span> Tìm việc</button>
+        </form>
+        <div class="quick-tags">
+          <span>Gợi ý:</span>
+          <a href="viec-lam.html?bao-o=1">Bao ăn ở</a>
+          <a href="viec-lam.html?luong=9">Lương trên 9 triệu</a>
+          <a href="viec-lam.html?ca=12h">Ca 12 tiếng</a>
+          <a href="viec-lam.html?ca=dem">Ca đêm</a>
+          <a href="#" class="ai" id="nearMe"><span data-i="ai"></span> AI gợi ý việc gần nhà</a>
+        </div>
+      </div>
+      <div class="hero-emblem"><img src="assets/img/logo-shield.webp" width="290" height="299" alt="Biểu tượng ViecLamBaoVe – nhân viên bảo vệ trên khiên"></div>
+    </div>
+  </section>
+
+  <div class="container stats-band">
+    <div class="stats">
+      <div class="stat"><span class="ic" data-i="target"></span><div><b id="statJobs">5.240+</b><span>Mục tiêu đang tuyển</span></div></div>
+      <div class="stat"><span class="ic" data-i="shieldcheck"></span><div><b>100%</b><span>Công ty xác thực ANTT</span></div></div>
+      <div class="stat"><span class="ic" data-i="money"></span><div><b>0 đồng</b><span>Phí cho người lao động</span></div></div>
+      <div class="stat"><span class="ic" data-i="clock"></span><div><b>5 phút</b><span>Gọi điện là nhận việc</span></div></div>
+    </div>
+  </div>
+
+  <section class="section-sm" style="padding-top:40px">
+    <div class="container">
+      <div class="ad-slot ad-banner">
+        <span class="ad-label">Nhà tài trợ</span>
+        <div class="ic" data-i="radio"></div>
+        <div><b>Đồng phục bảo vệ & bộ đàm Motorola giá sỉ toàn quốc</b>Chiết khấu 25% cho công ty dịch vụ bảo vệ đăng ký đối tác trên ViecLamBaoVe.vn</div>
+        <a class="btn btn-primary btn-sm" href="bang-gia.html#banner">Xem bảng giá sỉ</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">Lối tắt</span><h2>Tìm việc theo khu vực & mục tiêu</h2></div>
+        <a class="btn btn-ghost" href="viec-lam.html">Xem tất cả <span data-i="arrow"></span></a>
+      </div>
+      <div class="grid grid-3" id="areaGrid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">Tin VIP & tuyển gấp</span><h2>Việc làm nổi bật – đi làm ngay</h2></div>
+        <a class="btn btn-ghost" href="viec-lam.html">Xem toàn bộ việc làm <span data-i="arrow"></span></a>
+      </div>
+      <div class="job-list" id="hotJobs"></div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">Mới cập nhật</span><h2>Tin tuyển dụng mới nhất</h2></div>
+      </div>
+      <div class="job-list" id="newJobs"></div>
+      <div class="ad-slot ad-inline" style="margin-top:14px">
+        <span class="ad-label">Quảng cáo · Google AdSense</span>
+        <span class="ic" data-i="card"></span>
+        <div class="small"><b>Vay tiêu dùng ưu đãi cho nhân viên bảo vệ</b> – duyệt hồ sơ trong 15 phút, chỉ cần CCCD và xác nhận công tác.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark-band">
+    <div class="container">
+      <div class="grid grid-2" style="align-items:center;gap:40px">
+        <div>
+          <span class="eyebrow" style="color:var(--gold-light)">Dành cho nhà tuyển dụng</span>
+          <h2>Gõ 1 câu – AI viết xong tin tuyển dụng trong 1 phút</h2>
+          <p>Chỉ cần nhập "Tuyển 10 bảo vệ chung cư Quận 2, lương 8 triệu, bao ở". AI tự điền form, viết mô tả, quyền lợi, yêu cầu và đặt tiêu đề chuẩn Google. Bạn xem lại rồi bấm đăng.</p>
+          <div class="grid grid-2" style="margin:24px 0">
+            <div class="feature"><div class="ic" data-i="ai"></div><h3>AI viết & đăng tin</h3><p>Hỏi lại khi thiếu thông tin, không bịa lương hay chế độ.</p></div>
+            <div class="feature"><div class="ic" data-i="shieldcheck"></div><h3>AI chống lừa đảo</h3><p>Chấm điểm rủi ro mọi tin trước khi hiển thị.</p></div>
+          </div>
+          <a class="btn btn-primary btn-lg" href="nha-tuyen-dung.html#dang-tin"><span data-i="ai"></span> Thử đăng tin bằng AI</a>
+        </div>
+        <div class="ai-demo" aria-label="Ví dụ hội thoại AI">
+          <div class="bubble me"><span class="who">Nhà tuyển dụng</span>Tuyển 10 bảo vệ trực chung cư Quận 2, ca 12 tiếng, lương 8tr, bao ở, đi làm ngay. LH Zalo 09xx…</div>
+          <div class="bubble ai"><span class="who">Trợ lý AI</span>Tôi đã soạn tin bên dưới. Anh/chị cho biết thêm: độ tuổi và có yêu cầu chiều cao không?</div>
+          <div class="bubble me"><span class="who">Nhà tuyển dụng</span>Nam 20–50 tuổi, cao từ 1m65.</div>
+          <div class="bubble ai"><span class="who">Trợ lý AI</span>Đã cập nhật. Bấm <b>Xem trước</b> để kiểm tra, rồi <b>Đăng tin</b>.</div>
+          <div class="risk low" style="margin-top:6px"><span data-i="shieldcheck"></span> Kiểm duyệt AI: rủi ro thấp – tin sẽ hiển thị ngay</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head" style="justify-content:center;text-align:center;flex-direction:column;align-items:center">
+        <span class="eyebrow">An tâm tìm việc</span><h2>Vì sao người lao động tin ViecLamBaoVe?</h2>
+      </div>
+      <div class="grid grid-3">
+        <div class="feature"><div class="ic" data-i="shieldcheck"></div><h3>Công ty đã xác thực</h3><p>Kiểm tra mã số thuế và giấy phép kinh doanh dịch vụ bảo vệ, gắn huy hiệu "Đã xác thực".</p></div>
+        <div class="feature"><div class="ic" data-i="phone"></div><h3>Gọi ngay, không cần CV</h3><p>Bấm Gọi hoặc Zalo để nói chuyện trực tiếp với người tuyển, không qua môi giới.</p></div>
+        <div class="feature"><div class="ic" data-i="flag"></div><h3>Báo cáo tin lừa đảo</h3><p>Tin thu phí đồng phục, đặt cọc bị AI gắn cờ và quản trị viên xử lý trong 24 giờ.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">Cẩm nang</span><h2>Cẩm nang nghề bảo vệ & cảnh báo an toàn</h2></div>
+        <a class="btn btn-ghost" href="cam-nang.html">Tất cả bài viết <span data-i="arrow"></span></a>
+      </div>
+      <div class="grid grid-3" id="homePosts"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <h2>Công ty bảo vệ cần tuyển số lượng lớn?</h2>
+          <p style="margin:0">Đăng 3 tin miễn phí mỗi tháng. Nâng cấp VIP để lên đầu danh sách và nhận gấp 5 lần lượt gọi.</p>
+        </div>
+        <div class="row"><a class="btn btn-primary btn-lg" href="nha-tuyen-dung.html#dang-tin">Đăng tin miễn phí</a><a class="btn btn-outline btn-lg" href="bang-gia.html">Xem bảng giá</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV;
+  V.$$('[data-i]').forEach(el => el.outerHTML = V.icon(el.dataset.i));
+  V.$('#pillIcon').innerHTML = V.icon('check', 'ico-sm');
+  V.$('#heroProvince').insertAdjacentHTML('beforeend', V.provinces.map(p => `<option value="${p.slug}">${p.name}</option>`).join(''));
+
+  const count = (f) => V.activeJobs().filter(f).length;
+  const areas = [
+    { t: 'Bảo vệ TP.HCM', h: 'viec-lam.html?tinh=tp-hcm', i: 'building', n: 2150 + count(j => j.province === 'tp-hcm') },
+    { t: 'Bảo vệ Hà Nội', h: 'viec-lam.html?tinh=ha-noi', i: 'building', n: 1420 + count(j => j.province === 'ha-noi') },
+    { t: 'KCN Bình Dương', h: 'viec-lam.html?tinh=binh-duong&muc-tieu=kcn', i: 'factory', n: 980 },
+    { t: 'Bảo vệ ngân hàng', h: 'viec-lam.html?muc-tieu=ngan-hang', i: 'bank', n: 340 },
+    { t: 'Tòa nhà / Chung cư', h: 'viec-lam.html?muc-tieu=toa-nha', i: 'home', n: 860 },
+    { t: 'Bao ăn ở miễn phí', h: 'viec-lam.html?bao-o=1', i: 'bed', n: 1900 }
+  ];
+  V.$('#areaGrid').innerHTML = areas.map(a => `<a class="area-card" href="${a.h}"><span class="ic">${V.icon(a.i)}</span><div><b>${a.t}</b><span>${a.n.toLocaleString('vi-VN')}+ việc làm</span></div></a>`).join('');
+
+  const active = V.activeJobs();
+  V.$('#hotJobs').innerHTML = active.filter(j => j.tier === 'vip' || j.urgent).slice(0, 5).map(V.jobCard).join('');
+  V.$('#newJobs').innerHTML = [...active].sort((a, b) => a.posted - b.posted).filter(j => j.tier !== 'vip').slice(0, 4).map(V.jobCard).join('');
+  V.$('#homePosts').innerHTML = V.posts.slice(0, 3).map(V.postCard).join('');
+
+  V.$('#nearMe').addEventListener('click', (e) => {
+    e.preventDefault();
+    const go = () => location.href = 'viec-lam.html?gan-nha=1&tinh=tp-hcm';
+    if (!navigator.geolocation) return go();
+    V.toast('Đang xác định vị trí của bạn…', 'pin');
+    navigator.geolocation.getCurrentPosition(go, go, { timeout: 4000 });
+  });
+})();
+</script>
+</body>
+</html>

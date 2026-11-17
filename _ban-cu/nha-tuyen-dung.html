@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Khu vực nhà tuyển dụng – Đăng tin bằng AI | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Đăng tin tuyển bảo vệ bằng AI trong 1 phút, quản lý tin, quản lý ứng viên và mua gói dịch vụ.">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="post">
+<main class="container dash">
+  <nav class="dash-nav" aria-label="Khu vực nhà tuyển dụng">
+    <div class="dash-user"><div class="avatar" style="background:#1f2a6b">LH</div><div><b style="color:var(--ink)" id="ename">Bảo vệ Long Hải</b><div class="small" style="color:var(--green)">✔ Đã xác thực</div></div></div>
+    <button data-tab="tong-quan"><span data-i="chart"></span> Tổng quan</button>
+    <button data-tab="dang-tin"><span data-i="ai"></span> Đăng tin (AI)</button>
+    <button data-tab="quan-ly-tin"><span data-i="list"></span> Quản lý tin</button>
+    <button data-tab="ung-vien"><span data-i="users"></span> Ứng viên <span class="count">3</span></button>
+    <button data-tab="tim-ung-vien"><span data-i="search"></span> Tìm ứng viên</button>
+    <button data-tab="xac-thuc"><span data-i="shieldcheck"></span> Xác thực công ty</button>
+    <button data-tab="goi-dich-vu"><span data-i="card"></span> Gói & thanh toán</button>
+  </nav>
+
+  <div>
+    <!-- Tổng quan -->
+    <section class="dash-panel" data-panel="tong-quan">
+      <h1 style="font-size:1.6rem">Xin chào, <span id="ename2">Long Hải</span></h1>
+      <div class="kpis">
+        <div class="kpi"><span><span data-i="file"></span> Tin đang hiển thị</span><b id="kActive">4</b><small>+1 tuần này</small></div>
+        <div class="kpi"><span><span data-i="eye"></span> Lượt xem 30 ngày</span><b>3.620</b><small>+18%</small></div>
+        <div class="kpi"><span><span data-i="phone"></span> Lượt gọi / Zalo</span><b>187</b><small>+24%</small></div>
+        <div class="kpi"><span><span data-i="users"></span> Hồ sơ ứng tuyển</span><b>42</b><small>+9 hôm nay</small></div>
+      </div>
+      <div class="grid" style="grid-template-columns:2fr 1fr">
+        <div class="card"><div class="card-body">
+          <h3 class="card-title">Lượt gọi theo ngày (7 ngày)</h3>
+          <div class="bar-chart" id="chart" style="margin-bottom:24px"></div>
+        </div></div>
+        <div class="card"><div class="card-body stack">
+          <h3 class="card-title">Số dư tài khoản</h3>
+          <div class="row between"><span class="muted">Điểm xem hồ sơ</span><b>48 điểm</b></div>
+          <div class="row between"><span class="muted">Tin VIP còn lại</span><b>2 tin</b></div>
+          <div class="row between"><span class="muted">Gói hiện tại</span><span class="badge badge-vip">Miễn phí</span></div>
+          <button class="btn btn-primary btn-block" data-go="goi-dich-vu">Nâng cấp gói</button>
+        </div></div>
+      </div>
+      <div class="card" style="margin-top:20px"><div class="card-body">
+        <h3 class="card-title">Vòng đời tin tuyển dụng</h3>
+        <div class="lifecycle">
+          <div><b>Nháp</b>Đang soạn / AI vừa viết</div>
+          <div><b>Chờ duyệt</b>AI + quản trị kiểm tra</div>
+          <div class="on"><b>Đang hiển thị</b>Ứng viên xem & liên hệ</div>
+          <div><b>Sắp hết hạn</b>Nhắc trước 3 ngày</div>
+          <div><b>Hết hạn</b>Gia hạn hoặc lưu trữ</div>
+        </div>
+        <p class="small muted" style="margin:12px 0 0">Tin hết hạn tự ẩn khỏi danh sách, trang chi tiết vẫn mở nhưng ẩn số điện thoại và gợi ý việc tương tự – không mất thứ hạng Google.</p>
+      </div></div>
+    </section>
+
+    <!-- Đăng tin -->
+    <section class="dash-panel" data-panel="dang-tin">
+      <h1 style="font-size:1.6rem">Đăng tin tuyển dụng</h1>
+      <p class="muted">Gõ hoặc nói 1–2 câu, AI tự điền form và viết bài hoàn chỉnh. AI không tự đăng – bạn luôn xem lại trước.</p>
+      <div class="ai-box" style="margin-bottom:20px">
+        <div class="head"><span class="ic" data-i="ai"></span><div><b style="color:var(--ink)">Trợ lý AI đăng tin</b><div class="small muted">Không bịa thông tin bạn không cung cấp</div></div></div>
+        <div class="chat-log" id="chatLog">
+          <div class="bubble ai"><span class="who">Trợ lý AI</span>Chào anh/chị! Mô tả nhu cầu tuyển dụng, ví dụ: <i>"Tuyển 10 bảo vệ chung cư Quận 2, ca 12 tiếng, lương 8 triệu, bao ở, đi làm ngay"</i>.</div>
+        </div>
+        <form class="ai-input" id="aiForm">
+          <textarea class="textarea" id="aiText" rows="2" placeholder="Nhập yêu cầu tuyển dụng…" required></textarea>
+          <div style="display:grid;gap:6px">
+            <button type="button" class="icon-btn" id="micBtn" aria-label="Nói"><span data-i="mic"></span></button>
+            <button class="btn btn-navy" style="min-height:42px;padding:0 14px" aria-label="Gửi"><span data-i="send"></span></button>
+          </div>
+        </form>
+        <div class="row" style="margin-top:10px;gap:6px" id="examples"></div>
+      </div>
+
+      <form class="card" id="jobForm"><div class="card-body">
+        <h3 class="card-title"><span data-i="edit"></span> Thông tin tin đăng</h3>
+        <div class="form-grid">
+          <div class="field full"><label>Tiêu đề tin *</label><input class="input" name="title" required placeholder="VD: Tuyển 10 bảo vệ chung cư Quận 2, ca 12 tiếng, bao ở"><div class="hint">Nên có khu vực và loại mục tiêu để tốt cho Google.</div></div>
+          <div class="field"><label>Tỉnh / thành phố *</label><select class="select" name="province" id="jfProvince" required></select></div>
+          <div class="field"><label>Quận / huyện *</label><select class="select" name="district" id="jfDistrict" required></select></div>
+          <div class="field full"><label>Địa điểm mục tiêu</label><input class="input" name="address" placeholder="Tên tòa nhà, KCN, số nhà, đường…"></div>
+          <div class="field"><label>Loại mục tiêu</label><select class="select" name="target" id="jfTarget"></select></div>
+          <div class="field"><label>Ca làm</label><select class="select" name="shift" id="jfShift"></select></div>
+          <div class="field"><label>Số lượng cần tuyển</label><input class="input" name="qty" type="number" min="1" value="1"></div>
+          <div class="field"><label>Lương (triệu/tháng)</label><div class="row" style="flex-wrap:nowrap"><input class="input" name="salaryMin" type="number" step="0.5" placeholder="Từ"><input class="input" name="salaryMax" type="number" step="0.5" placeholder="Đến"></div></div>
+          <div class="field full"><label>Chế độ</label><div class="row">
+            <label class="check"><input type="checkbox" name="housing"> Bao ở</label>
+            <label class="check"><input type="checkbox" name="meals"> Bao ăn</label>
+            <label class="check"><input type="checkbox" name="urgent"> Tuyển gấp / đi làm ngay</label>
+          </div></div>
+          <div class="field full"><label>Mô tả công việc, quyền lợi, yêu cầu</label><textarea class="textarea" name="desc" rows="8"></textarea></div>
+          <div class="field"><label>SĐT / Zalo liên hệ *</label><input class="input" name="phone" inputmode="tel" required value="0909 123 456"></div>
+          <div class="field"><label>Thời hạn hiển thị</label><select class="select" name="expire"><option value="30">30 ngày (mặc định)</option><option value="15">15 ngày</option><option value="7">7 ngày</option></select></div>
+        </div>
+        <div id="riskBox" style="margin-top:18px"></div>
+        <div class="row" style="justify-content:flex-end;margin-top:18px">
+          <button type="button" class="btn btn-outline" id="saveDraft">Lưu nháp</button>
+          <button type="button" class="btn btn-outline" id="previewBtn"><span data-i="eye"></span> Xem trước</button>
+          <button class="btn btn-primary btn-lg">Đăng tin</button>
+        </div>
+      </div></form>
+    </section>
+
+    <!-- Quản lý tin -->
+    <section class="dash-panel" data-panel="quan-ly-tin">
+      <div class="row between" style="margin-bottom:16px"><h1 style="font-size:1.6rem;margin:0">Quản lý tin đã đăng</h1><button class="btn btn-primary" data-go="dang-tin"><span data-i="plus"></span> Đăng tin mới</button></div>
+      <div class="card table-wrap"><table class="table" id="jobTable"><thead><tr><th>Tin tuyển dụng</th><th>Trạng thái</th><th>Xem / Gọi</th><th>Hết hạn</th><th style="text-align:right">Thao tác</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <!-- Ứng viên (mini-ATS) -->
+    <section class="dash-panel" data-panel="ung-vien">
+      <h1 style="font-size:1.6rem">Quản lý ứng viên</h1>
+      <p class="muted">Kéo thả thẻ ứng viên giữa các cột để cập nhật trạng thái.</p>
+      <div class="kanban" id="kanban"></div>
+    </section>
+
+    <!-- Tìm ứng viên -->
+    <section class="dash-panel" data-panel="tim-ung-vien">
+      <h1 style="font-size:1.6rem">Tìm ứng viên chủ động</h1>
+      <div class="card" style="margin-bottom:16px"><div class="card-body row">
+        <select class="select" style="flex:1;min-width:200px"><option>Quanh Quận 7, TP.HCM</option><option>Quanh Thuận An, Bình Dương</option><option>Quanh Cầu Giấy, Hà Nội</option></select>
+        <select class="select" style="width:auto"><option>Bán kính 5 km</option><option>10 km</option><option>20 km</option></select>
+        <button class="btn btn-navy"><span data-i="search"></span> Tìm</button>
+        <span class="badge badge-vip" style="margin-left:auto">Còn <b id="points">48</b> điểm</span>
+      </div></div>
+      <div class="grid grid-2" id="candGrid"></div>
+    </section>
+
+    <!-- Xác thực -->
+    <section class="dash-panel" data-panel="xac-thuc">
+      <h1 style="font-size:1.6rem">Xác thực công ty</h1>
+      <p class="muted">Công ty đã xác thực được gắn huy hiệu <span class="badge badge-verified">✔ Đã xác thực</span>, tin được ưu tiên và ứng viên tin tưởng hơn.</p>
+      <form class="card" id="verifyForm"><div class="card-body">
+        <div class="form-grid">
+          <div class="field"><label>Tên công ty *</label><input class="input" required value="Công ty TNHH DV Bảo vệ Long Hải"></div>
+          <div class="field"><label>Mã số thuế *</label><input class="input" required value="0312456789"></div>
+          <div class="field full"><label>Giấy chứng nhận đủ điều kiện ANTT / GPKD dịch vụ bảo vệ *</label><input class="input" type="file" accept="image/*,.pdf" style="padding:10px"></div>
+          <div class="field full"><label>Người đại diện & SĐT</label><input class="input" value="Trần Văn Hải – 0909 123 456"></div>
+        </div>
+        <div class="row" style="justify-content:space-between;margin-top:18px"><span class="badge badge-verified">Trạng thái: Đã xác thực ngày 02/10/2026</span><button class="btn btn-navy">Gửi cập nhật hồ sơ</button></div>
+      </div></form>
+    </section>
+
+    <!-- Gói & thanh toán -->
+    <section class="dash-panel" data-panel="goi-dich-vu">
+      <h1 style="font-size:1.6rem">Gói dịch vụ & thanh toán</h1>
+      <div class="grid grid-2" id="pkgGrid" style="margin-bottom:20px"></div>
+      <div class="card"><div class="card-body">
+        <h3 class="card-title">Lịch sử giao dịch & hóa đơn</h3>
+        <div class="table-wrap"><table class="table"><thead><tr><th>Mã GD</th><th>Nội dung</th><th>Số tiền</th><th>Phương thức</th><th>Ngày</th><th></th></tr></thead><tbody>
+          <tr><td>#GD10293</td><td>Tin VIP × 2</td><td><b>598.000đ</b></td><td>QR ngân hàng</td><td>05/11/2026</td><td><button class="btn btn-ghost btn-sm" data-toast="Đang tải hóa đơn VAT…">Hóa đơn</button></td></tr>
+          <tr><td>#GD10011</td><td>50 điểm xem hồ sơ</td><td><b>250.000đ</b></td><td>MoMo</td><td>21/10/2026</td><td><button class="btn btn-ghost btn-sm" data-toast="Đang tải hóa đơn VAT…">Hóa đơn</button></td></tr>
+        </tbody></table></div>
+      </div></div>
+    </section>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, $ = V.$, I = V.icon, S = V.store;
+  const fixIcons = () => V.$$('[data-i]').forEach(el => el.outerHTML = I(el.dataset.i));
+  fixIcons();
+  const u = V.user();
+  if (u && u.role === 'employer') { $('#ename').textContent = u.name; $('#ename2').textContent = u.name; }
+  const show = V.initTabs(document);
+  document.addEventListener('click', e => {
+    const g = e.target.closest('[data-go]'); if (g) { show(g.dataset.go); history.replaceState(null, '', '#' + g.dataset.go); scrollTo({ top: 0, behavior: 'smooth' }); }
+    const t = e.target.closest('[data-toast]'); if (t) V.toast(t.dataset.toast);
+  });
+
+  /* Chart */
+  const days = [['T2', 18], ['T3', 24], ['T4', 21], ['T5', 33], ['T6', 29], ['T7', 38], ['CN', 24]];
+  $('#chart').innerHTML = days.map(([d, v]) => `<div style="height:${v / 38 * 100}%" title="${v} lượt"><span>${d}</span></div>`).join('');
+
+  /* ---------- Form đăng tin ---------- */
+  const f = $('#jobForm');
+  $('#jfProvince').innerHTML = V.provinces.map(p => `<option value="${p.slug}">${p.name}</option>`).join('');
+  const fillD = () => { $('#jfDistrict').innerHTML = V.province($('#jfProvince').value).districts.map(d => `<option>${d}</option>`).join(''); };
+  fillD(); $('#jfProvince').addEventListener('change', fillD);
+  $('#jfTarget').innerHTML = V.targets.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+  $('#jfShift').innerHTML = V.shifts.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+  const examples = ['Tuyển 10 bảo vệ chung cư Quận 2, ca 12 tiếng, lương 8tr, bao ở, đi làm ngay', 'Cần 5 bảo vệ nhà máy KCN VSIP Thuận An, lương 9-10 triệu, bao ăn ở', 'Tuyển gấp 2 bảo vệ ngân hàng Cầu Giấy giờ hành chính, phải nộp phí đồng phục 500k'];
+  $('#examples').innerHTML = '<span class="small muted">Thử:</span>' + examples.map((x, i) => `<button type="button" class="chip" data-ex="${i}" style="font-size:.78rem;padding:5px 10px">${x.slice(0, 38)}…</button>`).join('');
+  $('#examples').addEventListener('click', e => { const b = e.target.closest('[data-ex]'); if (b) { $('#aiText').value = examples[b.dataset.ex]; $('#aiText').focus(); } });
+
+  const log = (html, who) => { $('#chatLog').insertAdjacentHTML('beforeend', `<div class="bubble ${who}"><span class="who">${who === 'me' ? 'Bạn' : 'Trợ lý AI'}</span>${html}</div>`); $('#chatLog').scrollTop = 1e6; };
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  let awaiting = false;
+
+  /* Mô phỏng AI: bóc tách thông tin từ câu mô tả. Bản thật sẽ gọi API (Claude/Gemini/OpenAI) phía máy chủ. */
+  function parse(text) {
+    const n = norm(text), out = {};
+    const qty = n.match(/(\d+)\s*(bao ve|nguoi|nhan vien|ve si)/); if (qty) out.qty = qty[1];
+    const sal = n.match(/(\d+(?:[.,]\d+)?)\s*(?:-|–|den)\s*(\d+(?:[.,]\d+)?)\s*(?:tr|trieu)/) || n.match(/(\d+(?:[.,]\d+)?)\s*(?:tr|trieu)/);
+    if (sal) { out.salaryMin = sal[1].replace(',', '.'); out.salaryMax = (sal[2] || sal[1]).replace(',', '.'); }
+    for (const p of V.provinces) for (const d of p.districts) {
+      const key = norm(d.split(' (')[0]);
+      if (n.includes(key)) { out.province = p.slug; out.district = d; }
+    }
+    if (!out.province) for (const p of V.provinces) if (n.includes(norm(p.short)) || n.includes(norm(p.name))) out.province = p.slug;
+    if (n.includes('vsip')) { out.province = 'binh-duong'; out.district = 'Thuận An'; }
+    if (/ca dem/.test(n)) out.shift = 'dem'; else if (/12 ?(tieng|h)/.test(n)) out.shift = '12h'; else if (/24/.test(n)) out.shift = '24h'; else if (/8 ?(tieng|h)|hanh chinh/.test(n)) out.shift = '8h'; else if (/ca gay/.test(n)) out.shift = 'gay';
+    if (/chung cu|toa nha|van phong/.test(n)) out.target = 'toa-nha'; else if (/kcn|nha may|kho/.test(n)) out.target = 'kcn'; else if (/ngan hang/.test(n)) out.target = 'ngan-hang'; else if (/su kien/.test(n)) out.target = 'su-kien'; else if (/ve si/.test(n)) out.target = 've-si';
+    if (/bao an o|bao o|o mien phi|ky tuc/.test(n)) out.housing = true;
+    if (/bao an|an 3 bua/.test(n)) out.meals = true;
+    if (/gap|di lam ngay/.test(n)) out.urgent = true;
+    const ph = text.match(/0\d[\d .x]{7,}/i); if (ph) out.phone = ph[0].trim();
+    return out;
+  }
+
+  function riskCheck(text) {
+    const n = norm(text), flags = [];
+    if (/phi dong phuc|nop phi|dat coc|coc|phi giu cho|phi ho so/.test(n)) flags.push('Có dấu hiệu thu phí người lao động (đồng phục / đặt cọc / giữ chỗ)');
+    const max = +f.salaryMax.value || 0; if (max > 25) flags.push('Mức lương cao bất thường so với thị trường');
+    if (!f.address.value.trim()) flags.push('Thiếu địa chỉ mục tiêu cụ thể');
+    return flags;
+  }
+  function showRisk() {
+    const flags = riskCheck($('#aiText').dataset.last + ' ' + f.desc.value);
+    $('#riskBox').innerHTML = flags.length >= 1 && flags.some(x => x.includes('phí'))
+      ? `<div class="risk high">${I('alert')}<div><b>AI kiểm duyệt: rủi ro cao</b> – tin sẽ vào hàng chờ quản trị viên duyệt.<br>${flags.map(x => '• ' + x).join('<br>')}</div></div>`
+      : `<div class="risk low">${I('shieldcheck')}<div><b>AI kiểm duyệt: rủi ro thấp</b> – tin hiển thị ngay sau khi đăng.${flags.length ? '<br><span class="small">Gợi ý: ' + flags.join('; ') + '</span>' : ''}</div></div>`;
+  }
+
+  function writeDesc(d) {
+    const t = V.target(f.target.value), s = V.shift(f.shift.value);
+    const lines = [
+      'MÔ TẢ CÔNG VIỆC',
+      `- Trực bảo vệ ${t.name.toLowerCase()} tại ${f.address.value || f.district.value + ', ' + V.province(f.province.value).name}.`,
+      `- Làm ${s.name.toLowerCase()}, kiểm soát ra vào, tuần tra, ghi sổ giao ca.`,
+      '- Xử lý ban đầu các sự cố an ninh, PCCC theo quy trình.',
+      '', 'QUYỀN LỢI'
+    ];
+    if (f.salaryMin.value) lines.push(`- Lương ${f.salaryMin.value}${f.salaryMax.value && f.salaryMax.value !== f.salaryMin.value ? ' – ' + f.salaryMax.value : ''} triệu/tháng.`);
+    if (f.housing.checked) lines.push('- Bao ở miễn phí.');
+    if (f.meals.checked) lines.push('- Bao ăn.');
+    lines.push('- Không thu bất kỳ khoản phí nào của người lao động.');
+    lines.push('', 'YÊU CẦU');
+    lines.push(d.req ? `- ${d.req}.` : '- (Bổ sung độ tuổi, chiều cao nếu có).');
+    lines.push('- Sức khỏe tốt, có CCCD, không tiền án tiền sự.');
+    f.desc.value = lines.join('\n');
+  }
+
+  $('#aiForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const text = $('#aiText').value.trim(); if (!text) return;
+    log(V.esc(text), 'me'); $('#aiText').value = '';
+    $('#chatLog').insertAdjacentHTML('beforeend', '<div class="bubble ai typing" id="typing"><span></span><span></span><span></span></div>');
+    setTimeout(() => {
+      $('#typing')?.remove();
+      if (awaiting) {
+        awaiting = false;
+        writeDesc({ req: text });
+        log('Đã cập nhật yêu cầu. Bấm <b>Xem trước</b> để kiểm tra, rồi <b>Đăng tin</b>.', 'ai');
+        showRisk(); return;
+      }
+      $('#aiText').dataset.last = text;
+      const d = parse(text);
+      if (d.province) { f.province.value = d.province; fillD(); }
+      if (d.district) f.district.value = d.district;
+      ['qty', 'salaryMin', 'salaryMax', 'shift', 'target', 'phone'].forEach(k => d[k] && (f[k].value = d[k]));
+      f.housing.checked = !!d.housing; f.meals.checked = !!d.meals; f.urgent.checked = !!d.urgent;
+      const t = V.target(f.target.value), dist = f.district.value;
+      f.title.value = `${d.urgent ? 'Tuyển gấp ' : 'Tuyển '}${f.qty.value} bảo vệ ${t.name.split(' / ')[0].toLowerCase()} ${dist}, ${V.shift(f.shift.value).name.toLowerCase()}${d.salaryMin ? ', lương ' + d.salaryMin + (d.salaryMax !== d.salaryMin ? '–' + d.salaryMax : '') + ' triệu' : ''}${d.housing ? ', bao ở' : ''}`;
+      writeDesc({});
+      const missing = [];
+      if (!d.salaryMin) missing.push('mức lương');
+      if (!d.district) missing.push('quận/huyện cụ thể');
+      log(`Tôi đã soạn tin và điền form bên dưới.${missing.length ? ' Còn thiếu: <b>' + missing.join(', ') + '</b> – tôi không tự đoán, anh/chị bổ sung giúp.' : ''} Anh/chị cho biết thêm: <b>độ tuổi và có yêu cầu chiều cao không?</b>`, 'ai');
+      awaiting = true;
+      showRisk();
+    }, 900);
+  });
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  $('#micBtn').addEventListener('click', () => {
+    if (!SR) return V.toast('Trình duyệt chưa hỗ trợ nhập giọng nói', 'alert');
+    const r = new SR(); r.lang = 'vi-VN'; r.onresult = ev => $('#aiText').value = ev.results[0][0].transcript; r.start(); V.toast('Đang nghe… hãy nói yêu cầu tuyển dụng', 'mic');
+  });
+
+  const formJob = () => ({
+    id: Date.now(), title: f.title.value, company: 'long-hai', province: f.province.value, district: f.district.value, target: f.target.value, shift: f.shift.value,
+    salaryMin: +f.salaryMin.value || 0, salaryMax: +f.salaryMax.value || +f.salaryMin.value || 0, qty: +f.qty.value || 1, housing: f.housing.checked, meals: f.meals.checked,
+    urgent: f.urgent.checked, tier: 'normal', posted: 0, daysLeft: +f.expire.value, views: 0, calls: 0
+  });
+  $('#previewBtn').addEventListener('click', () => {
+    if (!f.title.value) return V.toast('Hãy nhập tiêu đề hoặc dùng AI soạn tin', 'alert');
+    V.modal(`<h3>Xem trước tin đăng</h3><div class="job-list" style="margin:14px 0">${V.jobCard(formJob())}</div><pre style="white-space:pre-wrap;font:inherit;font-size:.9rem;background:var(--bg);padding:14px;border-radius:12px;max-height:260px;overflow:auto">${V.esc(f.desc.value)}</pre><button class="btn btn-primary btn-block" data-close-modal>Đóng</button>`);
+  });
+  $('#saveDraft').addEventListener('click', () => { S.set('draft', formJob()); V.toast('Đã lưu nháp'); });
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    const high = riskCheck(($('#aiText').dataset.last || '') + ' ' + f.desc.value).some(x => x.includes('phí'));
+    const j = formJob(); j.status = high ? 'pending' : 'live';
+    const mine = S.get('myJobs', []); mine.unshift(j); S.set('myJobs', mine);
+    V.toast(high ? 'Tin đã gửi – đang chờ quản trị viên duyệt' : 'Đăng tin thành công! Tin đã hiển thị', high ? 'alert' : 'check');
+    f.reset(); fillD(); $('#riskBox').innerHTML = ''; renderTable(); show('quan-ly-tin'); history.replaceState(null, '', '#quan-ly-tin');
+  });
+
+  /* ---------- Quản lý tin ---------- */
+  function renderTable() {
+    const mine = S.get('myJobs', []);
+    const base = V.jobs.filter(j => j.company === 'long-hai').map(j => ({ ...j, status: j.daysLeft < 0 ? 'expired' : j.daysLeft <= 3 ? 'soon' : 'live' }));
+    const all = [...mine, ...base];
+    $('#kActive').textContent = all.filter(j => j.status === 'live' || j.status === 'soon').length;
+    const st = { live: '<span class="badge badge-verified">Đang hiển thị</span>', pending: '<span class="badge badge-pending">Chờ duyệt</span>', soon: '<span class="badge badge-urgent">Sắp hết hạn</span>', expired: '<span class="badge badge-gray">Hết hạn</span>', hidden: '<span class="badge badge-gray">Tạm ẩn</span>' };
+    $('#jobTable tbody').innerHTML = all.map(j => `<tr>
+      <td style="max-width:320px"><a href="chi-tiet.html?id=${j.id}" style="font-weight:600;color:var(--ink)">${V.esc(j.title)}</a><div class="small muted">${j.district} · ${V.salary(j)}</div></td>
+      <td>${st[j.status]}${j.tier === 'vip' ? ' <span class="badge badge-vip">VIP</span>' : ''}</td>
+      <td>${j.views.toLocaleString('vi-VN')} / ${j.calls}</td>
+      <td>${j.daysLeft < 0 ? 'Đã hết' : j.daysLeft + ' ngày'}</td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="icon-btn" title="Gia hạn" data-toast="Đã gia hạn thêm 30 ngày">${I('refresh', 'ico-sm')}</button>
+        <button class="icon-btn" title="Đẩy tin" data-toast="Đã đẩy tin lên đầu (−39.000đ)">${I('bolt', 'ico-sm')}</button>
+        <button class="icon-btn" title="Nhân bản" data-toast="Đã nhân bản tin sang bản nháp">${I('copy', 'ico-sm')}</button>
+        <button class="icon-btn" title="Tạm ẩn" data-toast="Đã tạm ẩn tin">${I('pause', 'ico-sm')}</button>
+        <button class="icon-btn" title="Sửa" data-go="dang-tin">${I('edit', 'ico-sm')}</button>
+      </td></tr>`).join('');
+  }
+  renderTable();
+
+  /* ---------- Kanban ATS ---------- */
+  const cols = [['new', 'Mới'], ['called', 'Đã gọi'], ['interview', 'Hẹn PV / nhận đồng phục'], ['hired', 'Đi làm'], ['rejected', 'Loại']];
+  const cands = S.get('ats', null) || V.candidates.map((c, i) => ({ ...c, id: i }));
+  function renderKanban() {
+    $('#kanban').innerHTML = cols.map(([k, t]) => `<div class="kanban-col" data-col="${k}"><h4>${t}<span class="badge badge-gray">${cands.filter(c => c.status === k).length}</span></h4>
+      ${cands.filter(c => c.status === k).map(c => `<div class="cand" draggable="true" data-id="${c.id}"><b>${c.name}</b>${c.age} tuổi · ${c.height}<br><span class="muted">${c.exp}</span>
+      <div class="row">${c.certs.map(x => `<span class="badge badge-navy">${x}</span>`).join('')}</div>
+      <div class="row between"><span class="small muted">${c.time}</span><a class="btn btn-call btn-sm" href="tel:0900000000" style="min-height:30px;padding:0 10px">${I('phone', 'ico-sm')}</a></div></div>`).join('')}</div>`).join('');
+  }
+  renderKanban();
+  let dragId = null;
+  $('#kanban').addEventListener('dragstart', e => { dragId = +e.target.closest('.cand').dataset.id; });
+  $('#kanban').addEventListener('dragover', e => e.preventDefault());
+  $('#kanban').addEventListener('drop', e => {
+    const col = e.target.closest('[data-col]'); if (!col || dragId === null) return;
+    cands.find(c => c.id === dragId).status = col.dataset.col; S.set('ats', cands); renderKanban();
+    V.toast('Đã chuyển ứng viên sang “' + cols.find(c => c[0] === col.dataset.col)[1] + '”');
+  });
+
+  /* ---------- Tìm ứng viên ---------- */
+  let points = 48;
+  $('#candGrid').innerHTML = V.candidates.map((c, i) => `<div class="card"><div class="card-body">
+    <div class="row" style="gap:12px;margin-bottom:10px"><div class="avatar">${c.name.split(' ').slice(-1)[0][0]}</div><div><b style="color:var(--ink)">${c.name.replace(/(\S+)$/, m => m[0] + '***')}</b><div class="small muted">${c.age} tuổi · ${c.height} · ${c.area}</div></div></div>
+    <p class="small" style="margin-bottom:8px">${c.exp}</p>
+    <div class="row" style="gap:6px;margin-bottom:12px">${c.certs.map(x => `<span class="badge badge-navy">${x}</span>`).join('') || '<span class="badge badge-gray">Chưa có chứng chỉ</span>'}</div>
+    <button class="btn btn-outline btn-block btn-sm" data-unlock="${i}">${I('lock', 'ico-sm')} Xem số điện thoại (−1 điểm)</button>
+  </div></div>`).join('');
+  $('#candGrid').addEventListener('click', e => {
+    const b = e.target.closest('[data-unlock]'); if (!b) return;
+    if (points <= 0) return V.toast('Hết điểm – vui lòng mua thêm', 'alert');
+    points--; $('#points').textContent = points;
+    b.outerHTML = `<a class="btn btn-call btn-block btn-sm" href="tel:0901234${String(b.dataset.unlock).padStart(3, '0')}">${I('phone', 'ico-sm')} 0901 234 ${String(b.dataset.unlock).padStart(3, '0')}</a>`;
+  });
+
+  $('#verifyForm').addEventListener('submit', e => { e.preventDefault(); V.toast('Đã gửi hồ sơ xác thực – quản trị viên duyệt trong 24h', 'shieldcheck'); });
+
+  /* ---------- Gói ---------- */
+  $('#pkgGrid').innerHTML = V.packages.filter(p => p.price).map(p => `<div class="card"><div class="card-body">
+    <div class="row between"><h3 style="margin:0">${p.name}</h3>${p.featured ? '<span class="badge badge-vip">Phổ biến</span>' : ''}</div>
+    <p class="small muted">${p.desc}</p><div class="salary" style="font-size:1.4rem">${V.money(p.price)}<small> ${p.unit}</small></div>
+    <button class="btn btn-primary btn-block" style="margin-top:12px" data-buy="${p.id}">Mua ngay</button></div></div>`).join('');
+  $('#pkgGrid').addEventListener('click', e => {
+    const b = e.target.closest('[data-buy]'); if (!b) return;
+    const p = V.packages.find(x => x.id === b.dataset.buy);
+    V.modal(`<h3>Thanh toán: ${p.name}</h3><p class="muted">Số tiền: <b class="salary">${V.money(p.price)}</b></p>
+      <div class="tabs" id="payTabs"><button class="active" data-m="qr">QR ngân hàng</button><button data-m="vnpay">VNPay</button><button data-m="momo">MoMo</button></div>
+      <div style="display:grid;place-items:center;padding:10px">
+        <div style="width:180px;height:180px;border-radius:14px;background:repeating-conic-gradient(var(--navy-900) 0 25%, #fff 0 50%) 0 0/22px 22px;border:10px solid #fff;box-shadow:var(--shadow)"></div>
+        <p class="small muted" style="text-align:center;margin-top:12px">Nội dung CK: <b>VLBV ${Date.now().toString().slice(-6)}</b><br>Hệ thống tự kích hoạt gói sau khi nhận tiền.</p>
+      </div>
+      <label class="check small"><input type="checkbox"> Xuất hóa đơn VAT</label>
+      <button class="btn btn-primary btn-block" id="paid" style="margin-top:10px">Tôi đã thanh toán</button>`);
+    V.$$('#payTabs button').forEach(t => t.onclick = () => { V.$$('#payTabs button').forEach(x => x.classList.toggle('active', x === t)); });
+    $('#paid').onclick = () => { V.closeModal(); V.toast('Đã kích hoạt ' + p.name + '. Cảm ơn quý khách!', 'check'); };
+  });
+})();
+</script>
+</body>
+</html>

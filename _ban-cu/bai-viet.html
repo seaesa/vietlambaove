@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cẩm nang | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Bài viết cẩm nang nghề bảo vệ.">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="blog">
+<main>
+  <section class="page-head"><div class="container" id="head" style="max-width:860px"></div></section>
+  <section class="section-sm">
+    <div class="container layout-detail">
+      <article class="card"><div class="card-body prose" id="content" style="padding:32px"></div></article>
+      <aside class="stack sticky">
+        <div class="card"><div class="card-body"><h3 class="card-title">Việc làm đang tuyển gấp</h3><div class="stack" id="sideJobs"></div><a class="btn btn-primary btn-block" href="viec-lam.html" style="margin-top:14px">Xem tất cả việc làm</a></div></div>
+        <div class="ad-slot ad-side"><span class="ad-label">Quảng cáo</span><span data-i="shield"></span><b>Khóa học PCCC cấp chứng chỉ</b><span class="small">Học 2 ngày cuối tuần</span></div>
+      </aside>
+    </div>
+  </section>
+  <section class="section-sm" style="padding-bottom:56px"><div class="container"><h2>Bài viết liên quan</h2><div class="grid grid-3" id="related"></div></div></section>
+</main>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, $ = V.$, I = V.icon;
+  V.$$('[data-i]').forEach(el => el.outerHTML = V.icon(el.dataset.i, 'ico-lg'));
+  const idx = Math.max(0, V.posts.findIndex(p => p.id === V.qs('id')));
+  const p = V.posts[idx];
+  document.title = p.title + ' | ViecLamBaoVe.vn';
+  document.querySelector('meta[name=description]').content = p.excerpt;
+  const ld = document.createElement('script'); ld.type = 'application/ld+json';
+  ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.excerpt, publisher: { '@type': 'Organization', name: 'ViecLamBaoVe.vn' } });
+  document.head.appendChild(ld);
+
+  $('#head').innerHTML = `<nav class="breadcrumb"><a href="index.html">Trang chủ</a><span class="sep">/</span><a href="cam-nang.html">Cẩm nang</a><span class="sep">/</span><span>${p.cat}</span></nav>
+    <span class="badge badge-vip">${p.cat}</span><h1 style="margin-top:12px">${p.title}</h1>
+    <p class="small">${p.date} · ${p.read} phút đọc · ${p.views.toLocaleString('vi-VN')} lượt đọc · Biên tập: Ban nội dung ViecLamBaoVe</p>`;
+
+  const bodies = {
+    'bang-luong-bao-ve-2026': `<p>${p.excerpt}</p><h2>Mức lương phổ biến theo khu vực</h2>
+      <table><thead><tr><th>Khu vực</th><th>Ca 8 tiếng</th><th>Ca 12 tiếng</th><th>Chỉ huy mục tiêu</th></tr></thead><tbody>
+      <tr><td>TP.HCM</td><td>6,5 – 7,5 triệu</td><td>8 – 9,5 triệu</td><td>11 – 14 triệu</td></tr>
+      <tr><td>Hà Nội</td><td>6,5 – 7,5 triệu</td><td>8 – 9,5 triệu</td><td>11 – 13 triệu</td></tr>
+      <tr><td>Bình Dương / Đồng Nai</td><td>6,5 – 7 triệu</td><td>8,5 – 10 triệu</td><td>10 – 13 triệu</td></tr>
+      <tr><td>Vệ sĩ</td><td colspan="3">15 – 25 triệu tùy yêu cầu võ thuật, ngoại hình, lái xe</td></tr></tbody></table>
+      <h2>Các khoản phụ cấp thường có</h2><ul><li>Phụ cấp ca đêm: tối thiểu 30% lương giờ làm ban đêm.</li><li>Phụ cấp chuyên cần: 300.000 – 500.000đ/tháng.</li><li>Hỗ trợ chỗ ở, bữa ăn tại các mục tiêu KCN.</li></ul>
+      <blockquote>Số liệu tổng hợp từ tin tuyển dụng trên website, mang tính tham khảo.</blockquote>`,
+    'dau-hieu-cong-ty-bao-ve-lua-dao': `<p>${p.excerpt}</p><h2>5 dấu hiệu cần cảnh giác</h2><ol>
+      <li><b>Yêu cầu nộp tiền đồng phục, tiền cọc, phí giữ chỗ</b> trước khi đi làm.</li>
+      <li><b>Lương cao bất thường</b> (trên 15 triệu cho bảo vệ thường, không yêu cầu kinh nghiệm).</li>
+      <li><b>Không có địa chỉ mục tiêu cụ thể</b>, chỉ hẹn gặp ở quán cà phê.</li>
+      <li><b>Giữ giấy tờ gốc</b> như CCCD, bằng lái.</li>
+      <li><b>Công ty không có giấy chứng nhận đủ điều kiện ANTT</b> do công an cấp.</li></ol>
+      <h2>Cần làm gì khi nghi ngờ?</h2><p>Bấm nút <b>Báo cáo tin này</b> trên trang tin, chụp lại tin nhắn, và báo công an địa phương nếu đã mất tiền.</p>`,
+  };
+  $('#content').innerHTML = (bodies[p.id] || `<p>${p.excerpt}</p><h2>Nội dung chính</h2><p>Bài viết đang được ban biên tập hoàn thiện. AI soạn bản nháp và quản trị viên duyệt trước khi đăng để đảm bảo nội dung chính xác, hữu ích cho người làm nghề bảo vệ.</p><ul><li>Kiến thức nền tảng</li><li>Kinh nghiệm thực tế từ chỉ huy mục tiêu</li><li>Lưu ý pháp lý và an toàn</li></ul>`) +
+    `<div class="warn-box" style="margin-top:24px">${I('shieldcheck')}<div>Đang tìm việc? <a href="viec-lam.html"><b>Xem hơn 5.000 việc bảo vệ đang tuyển</b></a> từ các công ty đã xác thực.</div></div>`;
+  $('#sideJobs').innerHTML = V.activeJobs().filter(j => j.urgent).slice(0, 4).map(j => `<a href="chi-tiet.html?id=${j.id}" style="display:block;color:var(--ink)"><b style="font-size:.9rem;line-height:1.4;display:block">${j.title}</b><span class="salary" style="font-size:.9rem">${V.salary(j)}</span> <span class="small muted">· ${j.district}</span></a>`).join('<hr style="border:0;border-top:1px solid var(--line);margin:0">');
+  $('#related').innerHTML = V.posts.map((x, i) => [x, i]).filter(([x]) => x.id !== p.id).slice(0, 3).map(([x, i]) => V.postCard(x, i)).join('');
+})();
+</script>
+</body>
+</html>

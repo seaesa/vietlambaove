@@ -1,0 +1,7 @@
+# Apache: bỏ .html và chuyển mọi URL về index.html cho bộ định tuyến JS
+RewriteEngine On
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

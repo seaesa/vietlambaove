@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản trị hệ thống | ViecLamBaoVe.vn</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="admin">
+<main class="container dash">
+  <nav class="dash-nav" aria-label="Quản trị">
+    <div class="dash-user"><div class="avatar" style="background:var(--gold);color:var(--navy-950)">AD</div><div><b style="color:var(--ink)">Quản trị viên</b><div class="small muted">admin@vieclambaove.vn</div></div></div>
+    <button data-tab="thong-ke"><span data-i="chart"></span> Thống kê</button>
+    <button data-tab="duyet-tin"><span data-i="check"></span> Duyệt tin <span class="count" id="cPending">0</span></button>
+    <button data-tab="bao-cao"><span data-i="flag"></span> Báo cáo vi phạm <span class="count">3</span></button>
+    <button data-tab="cong-ty"><span data-i="building"></span> Công ty & người dùng</button>
+    <button data-tab="danh-muc"><span data-i="list"></span> Danh mục</button>
+    <button data-tab="quang-cao"><span data-i="card"></span> Gói & quảng cáo</button>
+    <button data-tab="blog-ai"><span data-i="ai"></span> Blog AI</button>
+  </nav>
+
+  <div>
+    <section class="dash-panel" data-panel="thong-ke">
+      <h1 style="font-size:1.6rem">Tổng quan hệ thống</h1>
+      <div class="kpis">
+        <div class="kpi"><span>Tin đang hiển thị</span><b>5.240</b><small>+126 hôm nay</small></div>
+        <div class="kpi"><span>Ứng viên đăng ký</span><b>38.912</b><small>+412 tuần này</small></div>
+        <div class="kpi"><span>Lượt gọi / Zalo</span><b>9.870</b><small>7 ngày qua</small></div>
+        <div class="kpi"><span>Doanh thu tháng</span><b>184,5tr</b><small>+12% so với T10</small></div>
+      </div>
+      <div class="grid" style="grid-template-columns:2fr 1fr">
+        <div class="card"><div class="card-body"><h3 class="card-title">Tin mới theo ngày</h3><div class="bar-chart" id="chart" style="margin-bottom:24px"></div></div></div>
+        <div class="card"><div class="card-body stack"><h3 class="card-title">Theo khu vực</h3><div id="areaStats" class="stack"></div></div></div>
+      </div>
+    </section>
+
+    <section class="dash-panel" data-panel="duyet-tin">
+      <h1 style="font-size:1.6rem">Hàng chờ duyệt tin</h1>
+      <p class="muted">AI đã chấm điểm rủi ro. Tin rủi ro thấp tự hiển thị; dưới đây là tin cần người duyệt.</p>
+      <div class="stack" id="queue"></div>
+    </section>
+
+    <section class="dash-panel" data-panel="bao-cao">
+      <h1 style="font-size:1.6rem">Báo cáo vi phạm từ người dùng</h1>
+      <div class="card table-wrap"><table class="table"><thead><tr><th>Tin bị báo cáo</th><th>Lý do</th><th>Số báo cáo</th><th style="text-align:right">Xử lý</th></tr></thead><tbody id="reports"></tbody></table></div>
+    </section>
+
+    <section class="dash-panel" data-panel="cong-ty">
+      <h1 style="font-size:1.6rem">Công ty & người dùng</h1>
+      <div class="card table-wrap"><table class="table"><thead><tr><th>Công ty</th><th>MST</th><th>Tin đang đăng</th><th>Xác thực</th><th style="text-align:right">Thao tác</th></tr></thead><tbody id="companies"></tbody></table></div>
+    </section>
+
+    <section class="dash-panel" data-panel="danh-muc">
+      <h1 style="font-size:1.6rem">Danh mục</h1>
+      <div class="grid grid-3">
+        <div class="card"><div class="card-body"><h3 class="card-title">Tỉnh / thành</h3><div class="row" id="catProv"></div></div></div>
+        <div class="card"><div class="card-body"><h3 class="card-title">Ca làm</h3><div class="row" id="catShift"></div></div></div>
+        <div class="card"><div class="card-body"><h3 class="card-title">Loại mục tiêu</h3><div class="row" id="catTarget"></div></div></div>
+      </div>
+    </section>
+
+    <section class="dash-panel" data-panel="quang-cao">
+      <h1 style="font-size:1.6rem">Gói dịch vụ, banner & AdSense</h1>
+      <div class="card table-wrap" style="margin-bottom:20px"><table class="table"><thead><tr><th>Gói</th><th>Giá</th><th>Đã bán (tháng)</th><th>Trạng thái</th></tr></thead><tbody id="pkgs"></tbody></table></div>
+      <div class="card"><div class="card-body stack">
+        <h3 class="card-title">Vị trí quảng cáo</h3>
+        <div class="row between"><span>Banner trang chủ (dưới hero) – <span class="muted">Đồng phục Hải Âu, hết hạn 30/11</span></span><label class="switch"><input type="checkbox" checked><span></span></label></div>
+        <div class="row between"><span>AdSense trong danh sách việc (sau mỗi 6 tin)</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
+        <div class="row between"><span>AdSense cột phải trang chi tiết</span><label class="switch"><input type="checkbox" checked><span></span></label></div>
+        <div class="row between"><span>Quảng cáo trên trang chi tiết – mobile <span class="muted">(tắt để không che nút Gọi/Zalo)</span></span><label class="switch"><input type="checkbox"><span></span></label></div>
+      </div></div>
+    </section>
+
+    <section class="dash-panel" data-panel="blog-ai">
+      <h1 style="font-size:1.6rem">Viết bài cẩm nang bằng AI</h1>
+      <form class="card" id="blogForm"><div class="card-body stack">
+        <div class="field"><label>Chủ đề / từ khóa SEO</label><input class="input" id="topic" required placeholder="VD: Lương bảo vệ ca đêm tại Bình Dương"></div>
+        <button class="btn btn-navy" style="align-self:flex-start"><span data-i="ai"></span> Tạo bản nháp</button>
+        <div id="draft"></div>
+      </div></form>
+    </section>
+  </div>
+</main>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, $ = V.$, I = V.icon;
+  V.$$('[data-i]').forEach(el => el.outerHTML = I(el.dataset.i));
+  V.initTabs(document);
+  document.addEventListener('click', e => { const t = e.target.closest('[data-toast]'); if (t) { V.toast(t.dataset.toast); t.closest('[data-row]')?.remove(); } });
+
+  const days = [96, 112, 104, 131, 126, 88, 74];
+  $('#chart').innerHTML = days.map((v, i) => `<div style="height:${v / 131 * 100}%" title="${v} tin"><span>${['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'][i]}</span></div>`).join('');
+  const areas = [['TP.HCM', 1840], ['Bình Dương', 1120], ['Hà Nội', 980], ['Đồng Nai', 640], ['Bắc Ninh', 410], ['Đà Nẵng', 250]];
+  $('#areaStats').innerHTML = areas.map(([n, v]) => `<div><div class="row between small"><span>${n}</span><b>${v.toLocaleString('vi-VN')}</b></div><div style="height:6px;background:var(--bg);border-radius:4px"><div style="height:100%;width:${v / 18.4}%;background:var(--navy-700);border-radius:4px"></div></div></div>`).join('');
+
+  const queue = [
+    { title: 'Tuyển gấp 20 bảo vệ KCN, lương 18 triệu, nộp 500k đồng phục', co: 'Bảo vệ Sao Việt', score: 92, flags: ['Thu phí đồng phục', 'Lương cao bất thường', 'Công ty chưa xác thực'] },
+    { title: 'Cần bảo vệ trông xe quán karaoke, ca đêm 10 triệu, đặt cọc giữ chỗ', co: 'Tài khoản cá nhân 0938***', score: 85, flags: ['Đặt cọc giữ chỗ', 'Thiếu địa chỉ mục tiêu'] },
+    { title: 'Tuyển vệ sĩ riêng 35 triệu, không cần kinh nghiệm', co: 'Tài khoản cá nhân 0977***', score: 64, flags: ['Lương cao bất thường', 'Không yêu cầu kinh nghiệm'] },
+    ...V.store.get('myJobs', []).filter(j => j.status === 'pending').map(j => ({ title: j.title, co: 'Bảo vệ Long Hải', score: 72, flags: ['Có dấu hiệu thu phí người lao động'] }))
+  ];
+  $('#cPending').textContent = queue.length;
+  $('#queue').innerHTML = queue.map(q => `<div class="card" data-row><div class="card-body">
+    <div class="row between" style="align-items:flex-start"><div style="flex:1;min-width:240px"><b style="color:var(--ink)">${V.esc(q.title)}</b><div class="small muted">${q.co}</div></div>
+    <span class="badge ${q.score >= 80 ? 'badge-urgent' : 'badge-pending'}">Rủi ro AI: ${q.score}/100</span></div>
+    <div class="risk high" style="margin:12px 0">${I('alert')}<div>${q.flags.map(f => '• ' + f).join('<br>')}</div></div>
+    <div class="row" style="justify-content:flex-end"><button class="btn btn-ghost btn-sm" data-toast="Đã yêu cầu nhà tuyển dụng sửa tin">Yêu cầu sửa</button><button class="btn btn-danger btn-sm" data-toast="Đã từ chối tin và cảnh cáo tài khoản">Từ chối</button><button class="btn btn-navy btn-sm" data-toast="Đã duyệt tin">Duyệt</button></div>
+  </div></div>`).join('');
+
+  const reports = [['Tuyển bảo vệ siêu thị Gò Vấp, lương 12 triệu', 'Thu tiền đồng phục khi đến phỏng vấn', 4], ['Bảo vệ nhà xưởng Biên Hòa ca đêm', 'Gọi không liên lạc được', 2], ['Tuyển vệ sĩ sự kiện cuối tuần', 'Sai mức lương thực tế', 1]];
+  $('#reports').innerHTML = reports.map(([t, r, n]) => `<tr data-row><td><b style="color:var(--ink)">${t}</b></td><td>${r}</td><td><span class="badge ${n > 2 ? 'badge-urgent' : 'badge-gray'}">${n}</span></td><td style="text-align:right;white-space:nowrap"><button class="btn btn-ghost btn-sm" data-toast="Đã bỏ qua báo cáo">Bỏ qua</button><button class="btn btn-danger btn-sm" data-toast="Đã gỡ tin và khóa đăng tin 30 ngày">Gỡ tin</button></td></tr>`).join('');
+
+  $('#companies').innerHTML = V.companies.map(c => `<tr><td><div class="row" style="gap:10px;flex-wrap:nowrap">${V.logo(c)}<a href="cong-ty.html?id=${c.id}" style="color:var(--ink);font-weight:600">${c.name}</a></div></td><td>${c.mst}</td><td>${V.jobs.filter(j => j.company === c.id && j.daysLeft >= 0).length}</td>
+    <td>${c.verified ? '<span class="badge badge-verified">Đã xác thực</span>' : '<span class="badge badge-pending">Chờ duyệt GPKD</span>'}</td>
+    <td style="text-align:right;white-space:nowrap">${c.verified ? '' : '<button class="btn btn-navy btn-sm" data-toast="Đã xác thực công ty">Xác thực</button>'} <button class="btn btn-ghost btn-sm" data-toast="Đã khóa tài khoản">Khóa</button></td></tr>`).join('');
+
+  const chips = (arr, k) => arr.map(x => `<span class="chip">${x[k]}</span>`).join('') + `<button class="chip" data-toast="Đã thêm mục mới">${I('plus', 'ico-sm')} Thêm</button>`;
+  $('#catProv').innerHTML = chips(V.provinces, 'name');
+  $('#catShift').innerHTML = chips(V.shifts, 'name');
+  $('#catTarget').innerHTML = chips(V.targets, 'name');
+  $('#pkgs').innerHTML = V.packages.map((p, i) => `<tr><td><b style="color:var(--ink)">${p.name}</b></td><td>${p.price ? V.money(p.price) : 'Miễn phí'}</td><td>${[812, 236, 341, 18][i]}</td><td><label class="switch"><input type="checkbox" checked><span></span></label></td></tr>`).join('');
+
+  $('#blogForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const t = $('#topic').value.trim();
+    $('#draft').innerHTML = `<div class="ai-box"><div class="head"><span class="ic">${I('ai')}</span><b>Bản nháp AI – cần biên tập viên duyệt</b></div>
+      <div class="prose"><h3>${V.esc(t)}</h3><p><i>Mở bài:</i> Giới thiệu nhu cầu tìm hiểu “${V.esc(t.toLowerCase())}” của người lao động.</p>
+      <ul><li>H2: Tổng quan và số liệu từ tin tuyển dụng trên website</li><li>H2: Các yếu tố ảnh hưởng</li><li>H2: Kinh nghiệm thực tế</li><li>H2: Câu hỏi thường gặp (FAQ schema)</li></ul>
+      <p class="small muted">AI chỉ dùng số liệu có trong hệ thống; chỗ thiếu dữ liệu được đánh dấu [CẦN BỔ SUNG].</p></div>
+      <div class="row" style="justify-content:flex-end"><button type="button" class="btn btn-ghost btn-sm" data-toast="Đã lưu nháp">Lưu nháp</button><button type="button" class="btn btn-primary btn-sm" data-toast="Đã gửi duyệt xuất bản">Gửi duyệt</button></div></div>`;
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cẩm nang nghề bảo vệ – Lương, nghiệp vụ, cảnh báo lừa đảo | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Bảng lương bảo vệ, kinh nghiệm phỏng vấn, nghiệp vụ tuần tra, PCCC và cảnh báo lừa đảo việc làm bảo vệ.">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="blog">
+<main>
+  <section class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="index.html">Trang chủ</a><span class="sep">/</span><span>Cẩm nang</span></nav>
+      <h1>Cẩm nang nghề bảo vệ</h1>
+      <p>Bảng lương, kinh nghiệm phỏng vấn, nghiệp vụ và cảnh báo lừa đảo – viết cho người làm nghề.</p>
+    </div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div class="row" id="cats" style="margin-bottom:20px"></div>
+      <div class="grid grid-3" id="posts"></div>
+      <div class="ad-slot ad-inline" style="margin-top:24px"><span class="ad-label">Quảng cáo · AdSense</span><span data-i="card"></span><div class="small"><b>Bảo hiểm tai nạn 24/7 cho nhân viên bảo vệ</b> – chỉ từ 3.000đ/ngày.</div></div>
+    </div>
+  </section>
+</main>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV;
+  V.$$('[data-i]').forEach(el => el.outerHTML = V.icon(el.dataset.i));
+  const cats = ['Tất cả', ...new Set(V.posts.map(p => p.cat))];
+  let cur = 'Tất cả';
+  const render = () => {
+    V.$('#cats').innerHTML = cats.map(c => `<button class="chip ${c === cur ? 'active' : ''}" data-c="${c}">${c}</button>`).join('');
+    V.$('#posts').innerHTML = V.posts.map((p, i) => [p, i]).filter(([p]) => cur === 'Tất cả' || p.cat === cur).map(([p, i]) => V.postCard(p, i)).join('');
+  };
+  V.$('#cats').addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (b) { cur = b.dataset.c; render(); } });
+  render();
+})();
+</script>
+</body>
+</html>

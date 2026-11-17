@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tuyển Dụng Việc Làm Bảo Vệ Mới Nhất | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Danh sách việc làm bảo vệ mới nhất: lọc theo tỉnh/quận, mức lương, ca làm, loại mục tiêu, bao ăn ở. Công ty xác thực, đi làm ngay.">
+  <link rel="canonical" href="https://vieclambaove.vn/viec-lam-bao-ve">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="jobs">
+<main>
+  <section class="page-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb" id="crumbs"></nav>
+      <h1 id="pageTitle">Tuyển dụng việc làm bảo vệ mới nhất</h1>
+      <p id="pageLead">Tổng hợp công ty bảo vệ uy tín đang tuyển trực tiếp, đi làm ngay, lương rõ ràng, hỗ trợ chỗ ở.</p>
+      <div class="seo-url" id="seoUrl"></div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="container layout-list">
+      <aside class="card sticky" id="filters" aria-label="Bộ lọc">
+        <div class="card-body">
+          <div class="row between" style="margin-bottom:14px">
+            <h3 style="margin:0" class="row"><span data-i="filter"></span> Bộ lọc</h3>
+            <button class="btn btn-ghost btn-sm" id="clearAll">Xóa lọc</button>
+          </div>
+          <div class="filter-group">
+            <h4>Từ khóa</h4>
+            <input class="input" id="fQ" placeholder="Chung cư, ngân hàng…">
+          </div>
+          <div class="filter-group">
+            <h4>Tỉnh / thành phố</h4>
+            <select class="select" id="fProvince"><option value="">Toàn quốc</option></select>
+            <select class="select" id="fDistrict" style="margin-top:8px"><option value="">Tất cả quận/huyện</option></select>
+          </div>
+          <div class="filter-group">
+            <h4>Mức lương tối thiểu</h4>
+            <select class="select" id="fSalary">
+              <option value="">Tất cả mức lương</option>
+              <option value="7">Từ 7 triệu</option>
+              <option value="8">Từ 8 triệu</option>
+              <option value="9">Từ 9 triệu</option>
+              <option value="11">Từ 11 triệu</option>
+              <option value="15">Từ 15 triệu</option>
+            </select>
+          </div>
+          <div class="filter-group"><h4>Ca làm</h4><div id="fShift"></div></div>
+          <div class="filter-group"><h4>Loại mục tiêu</h4><div id="fTarget"></div></div>
+          <div class="filter-group">
+            <h4>Chế độ</h4>
+            <label class="check"><input type="checkbox" id="fHousing"> Bao ở</label>
+            <label class="check"><input type="checkbox" id="fMeals"> Bao ăn</label>
+            <label class="check"><input type="checkbox" id="fVerified"> Chỉ công ty đã xác thực</label>
+            <label class="check"><input type="checkbox" id="fUrgent"> Tuyển gấp</label>
+          </div>
+          <div class="ad-slot ad-side" style="margin-top:8px">
+            <span class="ad-label">Quảng cáo</span>
+            <span data-i="radio" class="ico-lg"></span>
+            <b>Bộ đàm Motorola chính hãng</b>
+            <span class="small">Giá sỉ cho công ty bảo vệ – bảo hành 24 tháng</span>
+          </div>
+        </div>
+      </aside>
+
+      <div>
+        <div class="toolbar">
+          <div class="row">
+            <button class="btn btn-outline btn-sm filter-toggle" id="toggleFilter"><span data-i="filter"></span> Bộ lọc</button>
+            <span><b id="resultCount">0</b> việc làm phù hợp</span>
+          </div>
+          <label class="row small"><span class="muted">Sắp xếp</span>
+            <select class="select" id="sort" style="width:auto;min-height:40px">
+              <option value="hot">Nổi bật</option>
+              <option value="new">Mới nhất</option>
+              <option value="salary">Lương cao nhất</option>
+            </select>
+          </label>
+        </div>
+        <div class="active-filters" id="activeFilters"></div>
+        <div class="job-list" id="results"></div>
+        <nav class="pagination" id="pager" aria-label="Phân trang"></nav>
+
+        <div class="card" style="margin-top:28px"><div class="card-body seo-intro" id="seoIntro"></div></div>
+        <div style="margin-top:20px">
+          <h3>Tìm việc bảo vệ theo khu vực khác</h3>
+          <div class="link-cloud" id="linkCloud"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, $ = V.$;
+  V.$$('[data-i]').forEach(el => el.outerHTML = V.icon(el.dataset.i, el.className));
+  const PER = 6;
+  let page = 1;
+
+  /* Build filter controls */
+  $('#fProvince').insertAdjacentHTML('beforeend', V.provinces.map(p => `<option value="${p.slug}">${p.name}</option>`).join(''));
+  const cnt = (k, v) => V.activeJobs().filter(j => j[k] === v).length;
+  $('#fShift').innerHTML = V.shifts.map(s => `<label class="check"><input type="checkbox" value="${s.id}" name="shift"> ${s.name}<span class="count">${cnt('shift', s.id)}</span></label>`).join('');
+  $('#fTarget').innerHTML = V.targets.map(t => `<label class="check"><input type="checkbox" value="${t.id}" name="target"> ${t.name}<span class="count">${cnt('target', t.id)}</span></label>`).join('');
+
+  const fillDistricts = () => {
+    const p = V.province($('#fProvince').value);
+    $('#fDistrict').innerHTML = '<option value="">Tất cả quận/huyện</option>' + (p ? p.districts.map(d => `<option>${d}</option>`).join('') : '');
+    $('#fDistrict').disabled = !p;
+  };
+
+  /* Read URL params (trang khu vực SEO) */
+  const q = (k) => V.qs(k) || '';
+  $('#fQ').value = q('q');
+  $('#fProvince').value = q('tinh'); fillDistricts();
+  $('#fDistrict').value = q('quan');
+  $('#fSalary').value = q('luong');
+  $('#fHousing').checked = q('bao-o') === '1';
+  $('#fUrgent').checked = q('gap') === '1';
+  if (q('ca')) V.$$('[name=shift]').forEach(c => c.checked = c.value === q('ca'));
+  if (q('muc-tieu')) V.$$('[name=target]').forEach(c => c.checked = c.value === q('muc-tieu'));
+
+  const state = () => ({
+    q: $('#fQ').value.trim().toLowerCase(),
+    province: $('#fProvince').value,
+    district: $('#fDistrict').value,
+    salary: +$('#fSalary').value || 0,
+    shifts: V.$$('[name=shift]:checked').map(c => c.value),
+    targets: V.$$('[name=target]:checked').map(c => c.value),
+    housing: $('#fHousing').checked, meals: $('#fMeals').checked,
+    verified: $('#fVerified').checked, urgent: $('#fUrgent').checked,
+    sort: $('#sort').value
+  });
+
+  function render() {
+    const s = state();
+    let list = V.activeJobs().filter(j => {
+      const c = V.company(j.company);
+      if (s.q && !(j.title + ' ' + j.district + ' ' + c.name).toLowerCase().includes(s.q)) return false;
+      if (s.province && j.province !== s.province) return false;
+      if (s.district && j.district !== s.district) return false;
+      if (s.salary && j.salaryMax < s.salary) return false;
+      if (s.shifts.length && !s.shifts.includes(j.shift)) return false;
+      if (s.targets.length && !s.targets.includes(j.target)) return false;
+      if (s.housing && !j.housing) return false;
+      if (s.meals && !j.meals) return false;
+      if (s.verified && !c.verified) return false;
+      if (s.urgent && !j.urgent) return false;
+      return true;
+    });
+    const rank = j => (j.tier === 'vip' ? 0 : j.urgent ? 1 : 2);
+    list.sort(s.sort === 'salary' ? (a, b) => b.salaryMax - a.salaryMax : s.sort === 'new' ? (a, b) => a.posted - b.posted : (a, b) => rank(a) - rank(b) || a.posted - b.posted);
+
+    $('#resultCount').textContent = list.length;
+    const pages = Math.max(1, Math.ceil(list.length / PER));
+    page = Math.min(page, pages);
+    const slice = list.slice((page - 1) * PER, page * PER);
+    let html = slice.map(V.jobCard);
+    if (html.length > 3) html.splice(3, 0, `<div class="ad-slot ad-inline"><span class="ad-label">Quảng cáo · AdSense</span>${V.icon('briefcase')}<div class="small"><b>Khóa học nghiệp vụ bảo vệ & PCCC cấp chứng chỉ</b> – học cuối tuần, tăng lương ngay sau khi có chứng chỉ.</div></div>`);
+    $('#results').innerHTML = html.join('') || `<div class="card empty">${V.icon('search')}<h3>Chưa có việc phù hợp</h3><p>Thử bỏ bớt bộ lọc hoặc <a href="ung-vien.html#thong-bao">đăng ký nhận thông báo việc mới</a> tại khu vực này.</p></div>`;
+    $('#pager').innerHTML = pages > 1 ? Array.from({ length: pages }, (_, i) => `<button class="${i + 1 === page ? 'active' : ''}" data-p="${i + 1}">${i + 1}</button>`).join('') : '';
+
+    /* Chips đang lọc */
+    const chips = [];
+    const p = V.province(s.province);
+    if (p) chips.push(['tinh', p.name]);
+    if (s.district) chips.push(['quan', s.district]);
+    if (s.salary) chips.push(['luong', 'Từ ' + s.salary + ' triệu']);
+    s.shifts.forEach(x => chips.push(['shift:' + x, V.shift(x).name]));
+    s.targets.forEach(x => chips.push(['target:' + x, V.target(x).name]));
+    if (s.housing) chips.push(['housing', 'Bao ở']);
+    if (s.meals) chips.push(['meals', 'Bao ăn']);
+    if (s.urgent) chips.push(['urgent', 'Tuyển gấp']);
+    $('#activeFilters').innerHTML = chips.map(([k, t]) => `<button class="chip" data-rm="${k}">${t} ${V.icon('x', 'ico-sm')}</button>`).join('');
+
+    updateSeo(s, list.length);
+  }
+
+  /* Tiêu đề / mô tả / breadcrumb thay đổi theo bộ lọc – mô phỏng Programmatic SEO */
+  function updateSeo(s, n) {
+    const p = V.province(s.province);
+    const parts = [];
+    let slug = 'viec-lam-bao-ve';
+    if (s.targets.length === 1) { parts.push(V.target(s.targets[0]).name.toLowerCase()); slug = 'tuyen-bao-ve-' + s.targets[0]; }
+    if (s.shifts.length === 1) { parts.push(V.shift(s.shifts[0]).name.toLowerCase()); slug += '-' + s.shifts[0]; }
+    if (s.housing) { parts.push('bao ăn ở'); slug += '-bao-an-o'; }
+    const place = s.district ? `${s.district}${p ? ', ' + p.short : ''}` : p ? p.name : '';
+    if (place) slug += '-tai-' + (s.district ? s.district.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, '-').replace(/-$/, '') : p.slug);
+    const title = `Việc làm bảo vệ ${parts.join(', ')}${place ? ' tại ' + place : ''}`.replace(/\s+/g, ' ');
+    $('#pageTitle').textContent = title.charAt(0).toUpperCase() + title.slice(1) + ' – tháng 11/2026';
+    $('#pageLead').textContent = `${n} tin tuyển dụng đang hiển thị${place ? ' tại ' + place : ' trên toàn quốc'}. Lương rõ ràng, công ty đã xác thực, gọi điện hoặc nhắn Zalo nhận việc ngay.`;
+    document.title = title.charAt(0).toUpperCase() + title.slice(1) + ' | ViecLamBaoVe.vn';
+    $('#seoUrl').innerHTML = V.icon('target', 'ico-sm') + ' vieclambaove.vn/' + slug;
+    $('#crumbs').innerHTML = `<a href="index.html">Trang chủ</a><span class="sep">/</span><a href="viec-lam.html">Việc làm bảo vệ</a>${p ? `<span class="sep">/</span><a href="viec-lam.html?tinh=${p.slug}">${p.name}</a>` : ''}${s.district ? `<span class="sep">/</span><span>${s.district}</span>` : ''}`;
+    $('#seoIntro').innerHTML = `<h2>Giới thiệu: ${title}</h2>
+      <p>Nhu cầu tuyển bảo vệ${place ? ' tại ' + place : ''} tăng mạnh ở các tòa nhà văn phòng, chung cư, khu công nghiệp và ngân hàng. Mức lương phổ biến từ 7,5 – 10 triệu đồng/tháng cho ca 12 tiếng, nhiều nơi hỗ trợ chỗ ở và bữa ăn.</p>
+      <p>Tất cả tin trên trang được AI kiểm duyệt và đối chiếu thông tin công ty. Tuyệt đối không nộp tiền đồng phục, tiền cọc hay phí giữ chỗ – nếu gặp, hãy bấm <b>Báo cáo tin này</b>.</p>`;
+    const meta = document.querySelector('meta[name=description]');
+    meta.content = $('#pageLead').textContent;
+  }
+
+  $('#linkCloud').innerHTML = V.provinces.flatMap(p => p.districts.slice(0, 3).map(d => `<a href="viec-lam.html?tinh=${p.slug}&quan=${encodeURIComponent(d)}">Bảo vệ ${d}</a>`)).concat(
+    V.targets.map(t => `<a href="viec-lam.html?muc-tieu=${t.id}">Tuyển bảo vệ ${t.name.toLowerCase()}</a>`)).join('');
+
+  /* Events */
+  const rerender = () => { page = 1; render(); };
+  $('#fProvince').addEventListener('change', () => { fillDistricts(); rerender(); });
+  ['#fDistrict', '#fSalary', '#sort', '#fHousing', '#fMeals', '#fVerified', '#fUrgent'].forEach(s => $(s).addEventListener('change', rerender));
+  V.$$('[name=shift],[name=target]').forEach(c => c.addEventListener('change', rerender));
+  let t; $('#fQ').addEventListener('input', () => { clearTimeout(t); t = setTimeout(rerender, 200); });
+  $('#pager').addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (b) { page = +b.dataset.p; render(); window.scrollTo({ top: 200, behavior: 'smooth' }); } });
+  $('#toggleFilter').addEventListener('click', () => $('#filters').classList.toggle('open'));
+  $('#clearAll').addEventListener('click', () => {
+    $('#fQ').value = ''; $('#fProvince').value = ''; fillDistricts(); $('#fSalary').value = '';
+    V.$$('#filters input[type=checkbox]').forEach(c => c.checked = false); rerender();
+  });
+  $('#activeFilters').addEventListener('click', e => {
+    const b = e.target.closest('[data-rm]'); if (!b) return;
+    const [k, v] = b.dataset.rm.split(':');
+    if (k === 'tinh') { $('#fProvince').value = ''; fillDistricts(); }
+    if (k === 'quan') $('#fDistrict').value = '';
+    if (k === 'luong') $('#fSalary').value = '';
+    if (k === 'shift' || k === 'target') V.$$(`[name=${k}][value="${v}"]`).forEach(c => c.checked = false);
+    if (k === 'housing') $('#fHousing').checked = false;
+    if (k === 'meals') $('#fMeals').checked = false;
+    if (k === 'urgent') $('#fUrgent').checked = false;
+    rerender();
+  });
+
+  if (q('gan-nha')) V.toast('AI đã ưu tiên việc gần vị trí của bạn', 'ai');
+  render();
+})();
+</script>
+</body>
+</html>

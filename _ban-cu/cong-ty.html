@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trang công ty | ViecLamBaoVe.vn</title>
+  <meta name="description" content="Thông tin công ty bảo vệ, huy hiệu xác thực và các tin đang tuyển dụng.">
+  <meta name="theme-color" content="#111a4a">
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="jobs">
+<main>
+  <section class="page-head" style="padding:36px 0">
+    <div class="container" id="head"></div>
+  </section>
+  <section class="section-sm">
+    <div class="container layout-detail">
+      <div class="stack">
+        <div class="card"><div class="card-body prose" id="about"></div></div>
+        <h2 style="margin-top:24px" id="jobsTitle">Đang tuyển dụng</h2>
+        <div class="job-list" id="jobs"></div>
+      </div>
+      <aside class="stack sticky" id="side"></aside>
+    </div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <h2>Công ty bảo vệ khác</h2>
+      <div class="grid grid-3" id="others"></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function () {
+  const V = VLBV, $ = V.$, I = V.icon;
+  const c = V.company(V.qs('id')) || V.companies[0];
+  const jobs = V.activeJobs().filter(j => j.company === c.id);
+  document.title = `${c.name} tuyển dụng bảo vệ | ViecLamBaoVe.vn`;
+
+  $('#head').innerHTML = `
+    <nav class="breadcrumb"><a href="index.html">Trang chủ</a><span class="sep">/</span><span>Công ty</span><span class="sep">/</span><span>${c.short}</span></nav>
+    <div class="row" style="gap:20px;align-items:center">
+      ${V.logo(c, 'lg')}
+      <div style="flex:1;min-width:240px">
+        <h1 style="margin-bottom:6px">${c.name}</h1>
+        <div class="row" style="gap:8px">
+          ${c.verified ? `<span class="badge badge-verified">${I('shieldcheck', 'ico-sm')} Đã xác thực</span>` : `<span class="badge badge-pending">Đang chờ xác thực</span>`}
+          <span class="badge badge-navy">${I('star', 'ico-sm')} ${c.rating} · ${c.reviews} đánh giá</span>
+          <span class="badge badge-navy">${I('users', 'ico-sm')} ${c.size}</span>
+        </div>
+      </div>
+      <a class="btn btn-call btn-lg" href="tel:${c.phone.replace(/\s/g, '')}">${I('phone')} ${c.phone}</a>
+    </div>`;
+
+  $('#about').innerHTML = `<h2 style="margin-top:0">Giới thiệu</h2><p>${c.about}</p>
+    <h3>Cam kết với người lao động</h3>
+    <ul><li>Không thu bất kỳ khoản phí nào: đồng phục, giữ chỗ, đặt cọc.</li><li>Ký hợp đồng lao động, đóng BHXH theo quy định.</li><li>Trả lương qua tài khoản ngân hàng đúng hạn.</li></ul>`;
+  $('#jobsTitle').textContent = `Đang tuyển dụng (${jobs.length} tin)`;
+  $('#jobs').innerHTML = jobs.map(V.jobCard).join('') || '<div class="card empty"><p>Công ty hiện chưa có tin tuyển dụng đang hiển thị.</p></div>';
+
+  $('#side').innerHTML = `
+    <div class="card"><div class="card-body">
+      <h3 class="card-title">${I('file')} Thông tin pháp lý</h3>
+      <div class="stack small">
+        <div><span class="muted">Mã số thuế</span><br><b>${c.mst}</b></div>
+        <div><span class="muted">Giấy phép</span><br><b>${c.license}</b></div>
+        <div><span class="muted">Năm thành lập</span><br><b>${c.founded}</b></div>
+        <div><span class="muted">Địa chỉ</span><br><b>${c.address}</b></div>
+      </div>
+      ${c.verified ? `<div class="risk low" style="margin-top:16px">${I('shieldcheck')} Quản trị viên đã đối chiếu MST và giấy phép kinh doanh dịch vụ bảo vệ.</div>` : `<div class="risk high" style="margin-top:16px">${I('alert')} Công ty chưa hoàn tất xác thực. Hãy cẩn trọng, không nộp tiền khi ứng tuyển.</div>`}
+    </div></div>
+    <a class="btn btn-zalo btn-block btn-lg" href="https://zalo.me/${c.phone.replace(/\s/g, '')}" target="_blank" rel="noopener">${I('chat')} Nhắn Zalo cho công ty</a>`;
+
+  $('#others').innerHTML = V.companies.filter(x => x.id !== c.id).slice(0, 3).map(x => `
+    <a class="area-card" href="cong-ty.html?id=${x.id}">${V.logo(x)}<div><b>${x.short} ${x.verified ? `<span style="color:var(--green)">${I('shieldcheck', 'ico-sm')}</span>` : ''}</b><span>${V.activeJobs().filter(j => j.company === x.id).length} tin đang tuyển · ${x.size}</span></div></a>`).join('');
+})();
+</script>
+</body>
+</html>
