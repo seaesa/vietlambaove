@@ -27,7 +27,9 @@ export default function () {
     ['Có chỗ ở miễn phí', '/viec-lam?che-do=o', 'bed', count((j) => j.housing)]];
 
   const html = `
-  <section class="hero"><div class="wrap">
+  <section class="hero">
+    <img class="hero-img" src="/assets/img/photos/hero-bao-ve.jpg" alt="" width="1100" height="760" fetchpriority="high">
+    <div class="wrap">
     <h1>Việc bảo vệ uy tín, đi làm ngay!</h1>
     <p class="hero-sub">${jobs.length} tin đang tuyển từ ${V.companies.filter((c) => c.verified).length} công ty đã xác thực giấy phép · Ứng tuyển miễn phí</p>
     <form class="hsearch" id="finder" role="search">
@@ -105,6 +107,7 @@ export default function () {
         </div>`).join('')}</div>
       </section>
       <section class="empband">
+        <img class="eb-img" src="/assets/img/photos/doi-bao-ve.jpg" alt="Đội bảo vệ mặc áo phản quang làm nhiệm vụ tại một sự kiện" loading="lazy" width="900" height="700">
         <span class="kicker">Dành cho công ty bảo vệ</span>
         <h2>Tuyển đủ quân số trong 24 giờ</h2>
         <p>Đăng tin miễn phí, AI soạn tin giúp bạn, nhận cuộc gọi từ ứng viên đã xuất ngũ, có chứng chỉ nghiệp vụ.</p>
@@ -118,7 +121,7 @@ export default function () {
     <section class="panel-box" aria-labelledby="blogH">
       <div class="pb-head"><h2 id="blogH">Cẩm nang nghề bảo vệ</h2><a class="more" href="/cam-nang">Xem tất cả ${icon('arrow', 'ico-s')}</a></div>
       <div class="bgrid">${posts.map((p, i) => `<article class="bcard">
-        <a class="bc-thumb t-${i % 4}" href="${url.post(p)}" tabindex="-1" aria-hidden="true"><span>${esc(p.cat)}</span></a>
+        <a class="bc-thumb" href="${url.post(p)}" tabindex="-1" aria-hidden="true"><img src="${p.img}" alt="" loading="lazy" width="800" height="500"><span>${esc(p.cat)}</span></a>
         <h3><a href="${url.post(p)}">${esc(p.title)}</a></h3>
         <p class="meta">${p.date} · ${p.read} phút đọc</p>
       </article>`).join('')}</div>

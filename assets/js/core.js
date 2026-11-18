@@ -100,7 +100,9 @@ const P = {
 };
 export const icon = (n, cls = '') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[n] || ''}</svg>`;
 
-export const mono = (c, cls = '') => `<span class="mono ${cls}" style="background:${c.color}" aria-hidden="true">${c.initials}</span>`;
+export const mono = (c, cls = '') => c.logo
+  ? `<span class="mono mono-img ${cls}" aria-hidden="true"><img src="${c.logo}" alt="" loading="lazy"></span>`
+  : `<span class="mono ${cls}" style="background:${c.color}" aria-hidden="true">${c.initials}</span>`;
 
 /* ---------- Dòng tin tuyển dụng ---------- */
 export const isSaved = (id) => store.get('saved', []).includes(Number(id));

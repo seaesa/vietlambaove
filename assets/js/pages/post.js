@@ -38,9 +38,10 @@ export default function ({ params: [id] }) {
     <article>
       ${crumbs([['Trang chủ', '/'], ['Cẩm nang', '/cam-nang'], [p.cat, null]])}
       <span class="cat">${esc(p.cat)}</span>
-      <h1 class="d-title" style="margin-top:8px;max-width:22ch">${esc(p.title)}</h1>
+      <h1 class="d-title" style="margin-top:8px;max-width:32ch">${esc(p.title)}</h1>
       <div class="byline"><span>Ban biên tập Việc Làm Bảo Vệ</span><span>${p.date}</span><span>${p.read} phút đọc</span><span>${num(p.views)} lượt đọc</span></div>
-      <div class="prose" style="margin-top:28px">${BODY[p.id] || generic(p)}</div>
+      <figure class="post-hero"><img src="${p.img}" alt="${esc(p.title)}" width="800" height="500"></figure>
+      <div class="prose">${BODY[p.id] || generic(p)}</div>
       <section class="sec" style="padding-top:40px">
         <div class="sec-head"><h2>Đọc tiếp</h2></div>
         <ul class="glist">${related.map((r) => `<li><div><span class="cat">${esc(r.cat)}</span><br><a href="${url.post(r)}">${esc(r.title)}</a></div><time>${r.date}</time></li>`).join('')}</ul>
