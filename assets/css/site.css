@@ -1524,3 +1524,24 @@ body { background: var(--bg); }
 }
 .bc-thumb img, .bl-img img, .post-hero img { object-fit: cover; object-position: 50% 22%; }
 img[src$="blog-tuan-tra.jpg"] { object-position: 50% 75% !important; }
+
+/* Tạo hồ sơ 1 chạm */
+.btn-quick { background: #f59e0b; color: #1b1606; font-weight: 700; gap: 6px; }
+.btn-quick:hover { background: #e08e06; }
+.btn-quick svg { width: 16px; height: 16px; }
+.mast-quick { white-space: nowrap; }
+.hero-cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 18px 0 0; color: #dfe3f3; font-size: 14px; }
+.hero-cta .btn { padding: 11px 18px; font-size: 15px; }
+#quickForm .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 1080px) { .mast-act .btn-line, .mast-act .btn-primary, .mast-act .acct { display: none; } }
+@media (max-width: 720px) {
+  .mast-quick { padding: 8px 12px; font-size: 13.5px; }
+  .hero-cta { justify-content: center; text-align: center; }
+  .hero-cta span { flex-basis: 100%; font-size: 13.5px; }
+  .hero-cta .btn { width: 100%; justify-content: center; }
+}
+@media (max-width: 380px) { .mast-quick span { font-size: 12.5px; } }
+/* Hero dùng ảnh đội bảo vệ chào: người đứng nổi bật ở bên phải */
+@media (min-width: 961px) { .hero-img { width: 52%; object-position: 70% 20%; } }
+@media (max-width: 960px) { .hero-img { object-position: 75% 20%; } }
+.eb-img { object-position: 30% 35%; }

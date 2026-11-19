@@ -13,22 +13,20 @@ export default function () {
     ['Bảo vệ KCN Bình Dương', '/viec-lam/binh-duong?muc-tieu=kcn'],
     ['Vệ sĩ', '/viec-lam?muc-tieu=ve-si'],
     ['Bảo vệ ca đêm', '/viec-lam?ca=dem'],
-    ['Có chỗ ở', '/viec-lam?che-do=o'],
-    ['Tuyển gấp', '/viec-lam?gap=1']
+    ['Có chỗ ở', '/viec-lam?che-do=o']
   ];
 
 
   const tops = V.companies.map((c) => ({ c, n: count((j) => j.company === c.id) })).sort((a, b) => b.c.verified - a.c.verified || b.n - a.n);
   const sponsor = V.companies.find((c) => c.id === 'phuong-nam');
 
-  const urgent = jobs.filter((j) => j.urgent).slice(0, 6);
   const tiles = [...V.targets.map((t) => [t.name, '/viec-lam?muc-tieu=' + t.id, t.icon, count((j) => j.target === t.id)]),
     ['Bảo vệ ca đêm', '/viec-lam?ca=dem', 'moon', count((j) => j.shift === 'dem')],
     ['Có chỗ ở miễn phí', '/viec-lam?che-do=o', 'bed', count((j) => j.housing)]];
 
   const html = `
   <section class="hero">
-    <img class="hero-img" src="/assets/img/photos/hero-bao-ve.jpg" alt="" width="1100" height="760" fetchpriority="high">
+    <img class="hero-img" src="/assets/img/photos/hero-doi-bao-ve.webp" alt="" width="1600" height="1260" fetchpriority="high">
     <div class="wrap">
     <h1>Việc bảo vệ uy tín, đi làm ngay!</h1>
     <p class="hero-sub">${jobs.length} tin đang tuyển từ ${V.companies.filter((c) => c.verified).length} công ty đã xác thực giấy phép · Ứng tuyển miễn phí</p>
@@ -38,6 +36,7 @@ export default function () {
       <label class="hs-sel">${icon('clock')}<span class="sr">Ca làm</span><select name="ca"><option value="">Ca làm</option>${V.shifts.map((x) => `<option value="${x.id}">${x.name}</option>`).join('')}</select></label>
       <button class="btn btn-gold" type="submit">Tìm việc</button>
     </form>
+    <p class="hero-cta"><button class="btn btn-quick" type="button" data-quick>${icon('bolt')}Tạo hồ sơ 1 chạm</button><span>Để lại tên và số điện thoại, công ty bảo vệ gần bạn sẽ gọi lại.</span></p>
     <p class="hquick"><span>Tìm nhiều:</span>${quick.map(([t, h]) => `<a href="${h}">${t}</a>`).join('')}</p>
   </div></section>
 
@@ -45,18 +44,6 @@ export default function () {
     <section class="panel-box" aria-labelledby="catH">
       <div class="pb-head"><h2 id="catH">Tìm việc theo loại mục tiêu</h2></div>
       <div class="tiles">${tiles.map(([t, h, ic, n]) => `<a class="tile" href="${h}"><span class="tile-ic">${icon(ic)}</span><b>${esc(t)}</b><small>${n} việc làm</small></a>`).join('')}</div>
-    </section>
-
-    <section class="panel-box" aria-labelledby="urgH">
-      <div class="pb-strip">
-        <div>
-          <h2 id="urgH">${icon('bolt')}Việc bảo vệ tuyển gấp</h2>
-          <ul><li>${icon('check', 'ico-s')}Công ty đã xác thực</li><li>${icon('check', 'ico-s')}Phỏng vấn, nhận việc trong 1–2 ngày</li></ul>
-        </div>
-        <span class="pb-badge">Phản hồi trong <b>24h</b></span>
-      </div>
-      <div class="jgrid">${urgent.map(jobCard).join('')}</div>
-      <p class="pb-more"><a class="btn btn-soft" href="/viec-lam?gap=1">Xem thêm việc tuyển gấp</a></p>
     </section>
 
     <a class="hbanner" href="/viec-lam/binh-duong?muc-tieu=kcn">
@@ -107,7 +94,7 @@ export default function () {
         </div>`).join('')}</div>
       </section>
       <section class="empband">
-        <img class="eb-img" src="/assets/img/photos/doi-bao-ve.jpg" alt="Đội bảo vệ mặc áo phản quang làm nhiệm vụ tại một sự kiện" loading="lazy" width="900" height="700">
+        <img class="eb-img" src="/assets/img/photos/doi-bao-ve-toa-nha.webp" alt="Đội bảo vệ mặc đồng phục chào trước sảnh tòa nhà" loading="lazy" width="1100" height="825">
         <span class="kicker">Dành cho công ty bảo vệ</span>
         <h2>Tuyển đủ quân số trong 24 giờ</h2>
         <p>Đăng tin miễn phí, AI soạn tin giúp bạn, nhận cuộc gọi từ ứng viên đã xuất ngũ, có chứng chỉ nghiệp vụ.</p>

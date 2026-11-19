@@ -263,3 +263,33 @@ export function deskNav(base, items, active, who) {
 }
 
 export const crumbs = (items) => `<ol class="crumbs">${items.map(([t, h]) => `<li>${h ? `<a href="${h}">${esc(t)}</a>` : `<span aria-current="page">${esc(t)}</span>`}</li>`).join('')}</ol>`;
+
+/* ---------- Tạo hồ sơ 1 chạm: ít gõ, chọn là xong ---------- */
+const QUICK_EXP = ['Xuất ngũ', 'Công an nghĩa vụ', 'Chứng chỉ PCCC', 'Võ thuật', 'Chưa có kinh nghiệm'];
+export function quickProfile() {
+  const u = user() || {};
+  const p = store.get('profile', {});
+  const box = modal(`<h2>Tạo hồ sơ 1 chạm</h2>
+    <p>Chỉ cần tên và số điện thoại. Công ty bảo vệ đã xác thực gần bạn sẽ gọi hoặc nhắn Zalo.</p>
+    <form class="stack" id="quickForm">
+      <label class="field"><span>Họ và tên</span><input class="input" name="name" required autocomplete="name" value="${esc(p.name || u.name || '')}"></label>
+      <label class="field"><span>Số điện thoại / Zalo</span><input class="input" name="phone" required inputmode="tel" autocomplete="tel" pattern="[0-9 .+]{9,13}" placeholder="09xx xxx xxx" value="${esc(p.phone || u.phone || '')}"></label>
+      <div class="grid2">
+        <label class="field"><span>Năm sinh</span><input class="input" name="year" inputmode="numeric" placeholder="1995" value="${esc(p.year || '')}"></label>
+        <label class="field"><span>Muốn làm ở</span><select class="select" name="area">${V.provinces.map((x) => `<option value="${x.slug}" ${p.area === x.slug ? 'selected' : ''}>${x.name}</option>`).join('')}</select></label>
+      </div>
+      <div class="field"><span>Kinh nghiệm (chọn nếu có)</span>
+        <div class="pills">${QUICK_EXP.map((e) => `<label class="pill"><input type="checkbox" name="exp" value="${e}" ${(p.exp || []).includes(e) ? 'checked' : ''}><span>${e}</span></label>`).join('')}</div>
+      </div>
+      <button class="btn btn-quick btn-l btn-block" type="submit">Gửi hồ sơ – nhận cuộc gọi tuyển dụng</button>
+      <p class="mute" style="margin:0;font-size:13.5px">Miễn phí hoàn toàn. Không công ty nào được thu phí đồng phục hay đặt cọc.</p>
+    </form>`);
+  box.querySelector('#quickForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    store.set('profile', { ...p, ...Object.fromEntries(f), exp: f.getAll('exp') });
+    if (!user()) store.set('user', { name: f.get('name'), phone: f.get('phone'), role: 'candidate' });
+    closeModal();
+    toast('Đã gửi hồ sơ. Nhà tuyển dụng sẽ liên hệ bạn sớm.');
+  });
+}

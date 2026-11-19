@@ -1,5 +1,5 @@
 // Điểm vào: khai báo tuyến, vẽ khung trang, xử lý sự kiện chung
-import { $, icon, esc, user, store, toggleSave, applyJob, reportJob, toast, SITE } from './core.js';
+import { $, icon, esc, user, store, toggleSave, applyJob, reportJob, quickProfile, toast, SITE } from './core.js';
 import { route, onRender, match, clean, go } from './router.js';
 
 route(/^\/$/, () => import('./pages/home.js'));
@@ -17,7 +17,6 @@ route(/^\/chinh-sach(?:\/([a-z-]+))?$/, () => import('./pages/policy.js'));
 
 const NAV = [
   ['jobs', '/viec-lam', 'Việc làm'],
-  ['urgent', '/viec-lam?gap=1', 'Tuyển gấp'],
   ['blog', '/cam-nang', 'Cẩm nang'],
   ['pricing', '/bang-gia', 'Bảng giá'],
   ['employer', '/nha-tuyen-dung', 'Nhà tuyển dụng']
@@ -43,6 +42,7 @@ function header(navKey) {
     </a>
     <nav class="nav" aria-label="Chính">${NAV.map(([k, h, t]) => `<a href="${h}" class="${k === navKey ? 'on' : ''}">${t}</a>`).join('')}</nav>
     <div class="mast-act">
+      <button class="btn btn-quick btn-s mast-quick" type="button" data-quick>${icon('bolt')}<span>Tạo hồ sơ 1 chạm</span></button>
       ${right}
       <a class="emp-link" href="${postHref}"><small>Dành cho nhà tuyển dụng</small>Đăng tuyển, tìm ứng viên</a>
       <button class="burger" type="button" data-drawer aria-label="Mở menu" aria-expanded="false">${icon('menu')}</button>
@@ -192,6 +192,7 @@ document.addEventListener('click', (e) => {
     toast(on ? 'Đã lưu tin. Xem lại trong mục Đã lưu.' : 'Đã bỏ lưu tin.', 'bookmark');
     return;
   }
+  if (t.closest('[data-quick]')) { e.preventDefault(); quickProfile(); return; }
   const ap = t.closest('[data-apply]');
   if (ap) { e.preventDefault(); applyJob(ap.dataset.apply); return; }
   const rp = t.closest('[data-report]');
