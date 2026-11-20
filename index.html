@@ -12,6 +12,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap&subset=vietnamese" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="modulepreload" href="/assets/js/core.js">
+  <link rel="modulepreload" href="/assets/js/router.js">
+  <script>
+    // Trang chủ: tải ảnh hero và home.js ngay, không đợi JS dựng trang
+    if (location.pathname === '/') {
+      document.write('<link rel="preload" as="image" href="/assets/img/photos/hero-doi-bao-ve.webp" fetchpriority="high"><link rel="modulepreload" href="/assets/js/pages/home.js">');
+    }
+  </script>
 </head>
 <body>
   <a class="skip" href="#main">Bỏ qua, tới nội dung</a>

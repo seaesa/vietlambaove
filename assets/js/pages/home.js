@@ -26,7 +26,7 @@ export default function () {
 
   const html = `
   <section class="hero">
-    <img class="hero-img" src="/assets/img/photos/hero-doi-bao-ve.webp" alt="" width="1600" height="1260" fetchpriority="high">
+    <img class="hero-img" src="/assets/img/photos/hero-doi-bao-ve.webp" alt="" width="1600" height="1260" fetchpriority="high" decoding="async" onload="this.classList.add('is-in')">
     <div class="wrap">
     <h1>Việc bảo vệ uy tín, đi làm ngay!</h1>
     <p class="hero-sub">${jobs.length} tin đang tuyển từ ${V.companies.filter((c) => c.verified).length} công ty đã xác thực giấy phép · Ứng tuyển miễn phí</p>
